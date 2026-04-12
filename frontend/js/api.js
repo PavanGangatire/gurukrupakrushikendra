@@ -1,5 +1,5 @@
 // Base configuration for API requests
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://agrokart-rhe5.onrender.com/api';
 
 // Utility functions for localStorage
 const storage = {
