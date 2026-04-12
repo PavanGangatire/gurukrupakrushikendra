@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Product Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; margin: 0; padding: 0; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: var(--primary-dark); color: #fff; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { font-size: 1.2rem; margin: 0; }
+        .sidebar-nav { flex-grow: 1; padding: 20px 0; }
+        .nav-item { display: flex; align-items: center; padding: 15px 25px; color: rgba(255,255,255,0.7); gap: 15px; font-weight: 500; text-decoration:none; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: #fff; border-left: 4px solid var(--secondary-color); }
+        
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .topbar { height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        
+        .card { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; }
+        table th, table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        table th { background: #f9f9f9; color: #555; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        table tr:hover { background: #fafafa; }
+        .btn-sm { padding: 5px 10px; font-size: 0.85rem; }
+        .badge { padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: 500; }
+        .badge-danger { background: #ffebee; color: #d32f2f; }
+        .badge-warning { background: #fff3e0; color: #f57c00; }
+        .badge-success { background: #e8f5e9; color: #388e3c; }
+
+        .flex-between { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        #add-product-form { display: none; background: #fefefe; padding: 25px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 30px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 0.95rem; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-leaf"></i>
+                <h2>agrocart Admin</h2>
+            </div>
+                        <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="admin-farmers.html" class="nav-item"><i class="fa-solid fa-users"></i> Farmers</a>
+                <a href="admin-products.html" class="nav-item active"><i class="fa-solid fa-seedling"></i> Products</a>
+                <a href="admin-orders.html" class="nav-item"><i class="fa-solid fa-receipt"></i> Orders</a>
+                <a href="admin-credit.html" class="nav-item"><i class="fa-solid fa-handshake-angle"></i> Credit & Borrow</a>
+                
+                <div style="margin:20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);"></div>
+                <div style="padding: 0 25px; font-size:0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Advanced Modules</div>
+                <a href="admin-issues.html" class="nav-item"><i class="fa-solid fa-camera"></i> Crop Issues</a>
+                <a href="admin-purchases.html" class="nav-item"><i class="fa-solid fa-truck-ramp-box"></i> Stock Purchases</a>
+                <a href="admin-expenses.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Expenses</a>
+                <a href="admin-financials.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Financial Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item" style="color:#ff8a80;"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2 style="color:#333; font-size:1.4rem; margin:0;">Inventory & Products</h2>
+                <a href="../index.html" class="btn btn-outline" style="padding: 8px 15px; font-size:0.9rem;">View Shop</a>
+            </header>
+
+            <div class="content-area">
+                <div class="card">
+                    <div class="flex-between">
+                        <h3 style="color:var(--primary-dark); margin:0;">Product Catalog</h3>
+                        <button class="btn btn-primary" onclick="toggleAddProductForm()"><i class="fa-solid fa-plus"></i> Add New Product</button>
+                    </div>
+
+                    <div id="add-product-form">
+                        <h4 style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">Create Profile</h4>
+                        <form id="product-form">
+                            <input type="hidden" id="edit-product-id">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label class="form-label">Product Name</label>
+                                    <input type="text" id="p-name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select id="p-category" class="form-control" required>
+                                        <option value="seeds">Seeds</option>
+                                        <option value="fertilizers">Fertilizers</option>
+                                        <option value="pesticides">Pesticides</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Image URL</label>
+                                    <input type="text" id="p-image" class="form-control" placeholder="https://..." required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Price (₹)</label>
+                                    <input type="number" id="p-price" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Initial Stock</label>
+                                    <input type="number" id="p-stock" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Unit/Weight</label>
+                                    <input type="text" id="p-unit" class="form-control" placeholder="e.g. 1kg" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="p-desc" class="form-control" rows="3" required></textarea>
+                            </div>
+                            <div style="display:flex; gap:10px; justify-content:flex-end;">
+                                <button type="button" class="btn btn-outline" onclick="toggleAddProductForm()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Product</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div style="overflow-x:auto;">
+                        <table id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center;">Loading products...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-products.js"></script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration - agrocart</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding:20px; }
+        .admin-login-container { background: #fff; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 450px; padding: 40px; border-top: 5px solid var(--primary-dark); }
+        .admin-login-header { text-align: center; margin-bottom: 30px; }
+        .admin-login-header i { font-size: 3rem; color: var(--primary-dark); margin-bottom: 10px; }
+        .admin-login-header h2 { color: #333; margin: 0; font-size: 1.5rem; }
+        .admin-login-header p { color: #888; font-size: 0.9rem; margin-top: 5px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; font-family: inherit; font-size: 1rem; transition: border-color 0.3s; }
+        .form-control:focus { border-color: var(--primary-dark); outline: none; }
+        .btn-admin { width: 100%; padding: 12px; background: var(--primary-dark); color: #fff; border: none; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.3s; margin-top: 10px; }
+        .btn-admin:hover { background: #1b5e20; }
+        .error-msg { color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 6px; margin-bottom: 20px; text-align: center; display: none; font-size: 0.9rem; }
+        .back-link { display: block; text-align: center; margin-top: 25px; color: #666; text-decoration: none; font-size: 0.9rem; }
+        .back-link:hover { color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+
+    <div class="admin-login-container">
+        <!-- Hidden elements to configure registration mode -->
+        <input type="hidden" id="role" value="admin">
+        
+        <div class="admin-login-header">
+            <i class="fa-solid fa-user-plus"></i>
+            <h2>Admin Registration</h2>
+            <p>Create a new administrator account</p>
+        </div>
+
+        <div id="error-msg" class="error-msg"></div>
+
+        <form id="signup-form">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-id-badge" style="position: absolute; left: 15px; top: 15px; color: #aaa;"></i>
+                    <input type="text" id="name" class="form-control" style="padding-left: 45px;" placeholder="Enter name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Admin Mobile Number</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-phone" style="position: absolute; left: 15px; top: 15px; color: #aaa;"></i>
+                    <input type="text" id="mobile" class="form-control" style="padding-left: 45px;" placeholder="Valid 10-digit mobile" required pattern="\d{10}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Secure Password</label>
+                <div style="position: relative;">
+                    <i class="fa-solid fa-lock" style="position: absolute; left: 15px; top: 15px; color: #aaa;"></i>
+                    <input type="password" id="password" class="form-control" style="padding-left: 45px;" placeholder="••••••••" required>
+                </div>
+            </div>
+            
+            <button type="submit" id="signup-btn" class="btn-admin">Create Admin Account</button>
+        </form>
+
+        <a href="admin-login.html" class="back-link" style="margin-top:20px;">Already an Admin? Login instead</a>
+        <a href="../index.html" class="back-link" style="margin-top:10px;"><i class="fa-solid fa-arrow-left"></i> Return to Main Site</a>
+    </div>
+
+    <!-- Scripts to process auth -->
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+
+</body>
+</html>

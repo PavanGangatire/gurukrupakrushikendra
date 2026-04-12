@@ -1,0 +1,47 @@
+[
+  {
+    "_id": "69be5ae0d6a64392188ad520",
+    "name": "System Admin",
+    "mobile": "9999999999",
+    "role": "admin",
+    "village": "Headquarters",
+    "remainingBorrowAmount": 0,
+    "creditRisk": "unassigned",
+    "createdAt": "2026-03-21T08:46:24.076Z",
+    "updatedAt": "2026-03-21T08:46:24.076Z",
+    "__v": 0
+  },
+  {
+    "_id": "69be5fa96dbdac9010b2389f",
+    "name": "pavan",
+    "mobile": "9657895153",
+    "role": "admin",
+    "remainingBorrowAmount": 0,
+    "creditRisk": "unassigned",
+    "createdAt": "2026-03-21T09:06:49.711Z",
+    "updatedAt": "2026-04-05T15:43:08.943Z",
+    "__v": 0,
+    "district": "Jalgaon",
+    "shopName": "Gurukrupa Krushi Kendra",
+    "state": "Maharashtra",
+    "town": "Bodwad",
+    "village": "Bodwad"
+  },
+  {
+    "_id": "69db5a120d82409c04eb3896",
+    "name": "Pune Owner",
+    "mobile": "9111111111",
+    "role": "admin",
+    "state": "Maharashtra",
+    "district": "Pune",
+    "taluka": "Haveli",
+    "town": "Pune",
+    "village": "8766723851",
+    "shopName": "Pune Agro Shop",
+    "remainingBorrowAmount": 0,
+    "creditRisk": "unassigned",
+    "createdAt": "2026-04-12T08:38:42.438Z",
+    "updatedAt": "2026-04-12T08:38:42.438Z",
+    "__v": 0
+  }
+]

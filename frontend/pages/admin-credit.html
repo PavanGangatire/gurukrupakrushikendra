@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Credit Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; margin: 0; padding: 0; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: var(--primary-dark); color: #fff; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { font-size: 1.2rem; margin: 0; }
+        .sidebar-nav { flex-grow: 1; padding: 20px 0; }
+        .nav-item { display: flex; align-items: center; padding: 15px 25px; color: rgba(255,255,255,0.7); gap: 15px; font-weight: 500; text-decoration:none; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: #fff; border-left: 4px solid var(--secondary-color); }
+        
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .topbar { height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        
+        .card { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); margin-bottom: 30px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95rem; }
+        table th, table td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+        table th { background: #f9f9f9; color: #555; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px; }
+        table tr:hover { background: #fafafa; }
+        .btn-sm { padding: 5px 10px; font-size: 0.85rem; }
+        .badge { padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: 500; }
+        .badge-danger { background: #ffebee; color: #d32f2f; }
+        .badge-warning { background: #fff3e0; color: #f57c00; }
+        .badge-success { background: #e8f5e9; color: #388e3c; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-leaf"></i>
+                <h2>agrocart Admin</h2>
+            </div>
+                        <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="admin-farmers.html" class="nav-item"><i class="fa-solid fa-users"></i> Farmers</a>
+                <a href="admin-products.html" class="nav-item"><i class="fa-solid fa-seedling"></i> Products</a>
+                <a href="admin-orders.html" class="nav-item"><i class="fa-solid fa-receipt"></i> Orders</a>
+                <a href="admin-credit.html" class="nav-item active"><i class="fa-solid fa-handshake-angle"></i> Credit & Borrow</a>
+                
+                <div style="margin:20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);"></div>
+                <div style="padding: 0 25px; font-size:0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Advanced Modules</div>
+                <a href="admin-issues.html" class="nav-item"><i class="fa-solid fa-camera"></i> Crop Issues</a>
+                <a href="admin-purchases.html" class="nav-item"><i class="fa-solid fa-truck-ramp-box"></i> Stock Purchases</a>
+                <a href="admin-expenses.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Expenses</a>
+                <a href="admin-financials.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Financial Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item" style="color:#ff8a80;"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2 style="color:#333; font-size:1.4rem; margin:0;">Credit Control</h2>
+                <div>
+                    <button id="open-credit-modal" class="btn btn-primary" style="margin-right: 15px;"><i class="fa-solid fa-plus"></i> Give on Credit</button>
+                    <a href="../index.html" class="btn btn-outline" style="padding: 8px 15px; font-size:0.9rem;">View Shop</a>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <div class="card">
+                    <h3 style="margin-bottom:20px; color:var(--primary-dark);">Pending Outstanding Balances</h3>
+                    <div style="overflow-x:auto;">
+                        <table id="credit-table">
+                            <thead>
+                                <tr>
+                                    <th>Farmer Name</th>
+                                    <th>Mobile Contacts</th>
+                                    <th>Village</th>
+                                    <th>Pending Dues</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td colspan="5" style="text-align:center;">Loading credit pool...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Give on Credit Modal -->
+    <div id="give-credit-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-handshake-angle text-primary"></i> Give Products on Credit</h3>
+                <span class="close-modal" id="close-credit-modal">&times;</span>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+                <form id="give-credit-form">
+                    <div style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 15px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Select Farmer</label>
+                            <select id="credit-farmer" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                                <option value="">Loading farmers...</option>
+                            </select>
+                        </div>
+                        <button type="button" id="show-add-farmer-btn" class="btn btn-outline" style="padding: 10px 15px;" title="Register New Farmer"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:600;">Select Product</label>
+                        <select id="credit-product" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                            <option value="">Loading products...</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Quantity</label>
+                            <input type="number" id="credit-qty" min="1" value="1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Total Value (₹)</label>
+                            <input type="number" id="credit-total" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #eee;">
+                        </div>
+                    </div>
+
+                    <!-- EXPLICIT BUTTON WRAPPER -->
+                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
+                        <button type="submit" id="submit-credit-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-size: 1.1rem;">Confirm Credit</button>
+                        <div id="credit-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settle Credit Modal -->
+    <div id="settle-credit-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-money-bill-transfer text-primary"></i> Settle Outstanding Dues</h3>
+                <span class="close-modal" id="close-settle-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p id="settle-farmer-info" style="margin-bottom: 20px; font-weight: 500; color: #555;"></p>
+                <form id="settle-credit-form">
+                    <input type="hidden" id="settle-farmer-id">
+                    <div class="form-group">
+                        <label>Amount Received (₹)</label>
+                        <input type="number" id="settle-amount" required min="1" placeholder="Enter amount paid by farmer">
+                    </div>
+                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
+                        <button type="submit" id="submit-settle-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-weight: 700;">Record Payment</button>
+                        <div id="settle-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Give on Credit Modal -->
+    <div id="give-credit-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-handshake-angle text-primary"></i> Give Products on Credit</h3>
+                <span class="close-modal" id="close-credit-modal">&times;</span>
+            </div>
+            <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
+                <form id="give-credit-form">
+                    <div style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 15px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Select Farmer</label>
+                            <select id="credit-farmer" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                                <option value="">Loading farmers...</option>
+                            </select>
+                        </div>
+                        <button type="button" id="show-add-farmer-btn" class="btn btn-outline" style="padding: 10px 15px;" title="Register New Farmer"><i class="fa-solid fa-user-plus"></i></button>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; margin-bottom:5px; font-weight:600;">Select Product</label>
+                        <select id="credit-product" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                            <option value="">Loading products...</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 25px;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Quantity</label>
+                            <input type="number" id="credit-qty" min="1" value="1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+                        </div>
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label style="display:block; margin-bottom:5px; font-weight:600;">Total Value (₹)</label>
+                            <input type="number" id="credit-total" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #eee;">
+                        </div>
+                    </div>
+
+                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
+                        <button type="submit" id="submit-credit-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-size: 1.1rem;">Confirm Credit</button>
+                        <div id="credit-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Farmer Modal -->
+    <div id="add-farmer-modal" class="modal">
+        <div class="modal-content" style="max-width: 400px; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus text-primary"></i> Register New Farmer</h3>
+                <span class="close-modal" id="close-add-farmer-modal">&times;</span>
+            </div>
+            <div class="modal-body" style="overflow-y: auto;">
+                <form id="add-farmer-form">
+                    <div class="form-group">
+                        <label>Full Name *</label>
+                        <input type="text" id="af-name" required placeholder="Enter full name">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number * (10 digits)</label>
+                        <input type="text" id="af-mobile" required pattern="\d{10}" placeholder="Enter 10-digit mobile">
+                    </div>
+                    <div class="form-group">
+                        <label>Village</label>
+                        <input type="text" id="af-village" placeholder="Enter village name">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>Town/City *</label>
+                            <input type="text" id="af-town" required placeholder="e.g. Bodwad">
+                        </div>
+                        <div class="form-group">
+                            <label>Taluka *</label>
+                            <input type="text" id="af-taluka" required placeholder="e.g. Bodwad">
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div class="form-group">
+                            <label>District *</label>
+                            <input type="text" id="af-district" required placeholder="e.g. Jalgaon">
+                        </div>
+                        <div class="form-group">
+                            <label>State *</label>
+                            <input type="text" id="af-state" required placeholder="e.g. Maharashtra">
+                        </div>
+                    </div>
+                    
+                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
+                        <button type="submit" id="submit-farmer-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-weight: 700;">Register Farmer</button>
+                        <div id="af-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-credit.js"></script>
+</body>
+</html>

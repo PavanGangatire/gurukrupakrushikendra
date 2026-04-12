@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - agrocart</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header {
+            background-color: var(--primary-dark);
+            color: #fff;
+            padding: 40px 0;
+            text-align: center;
+        }
+        .products-layout {
+            display: flex;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        .filters-sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            align-self: flex-start;
+        }
+        .filters-group {
+            margin-bottom: 20px;
+        }
+        .filters-group h4 {
+            margin-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        .filter-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .filter-option input {
+            margin-right: 10px;
+        }
+        .products-main {
+            flex-grow: 1;
+        }
+        .products-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        .search-bar {
+            display: flex;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+        .search-bar input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px 0 0 5px;
+        }
+        .search-bar button {
+            background: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        .product-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-info {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .product-category {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+        .product-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: auto;
+            margin-bottom: 15px;
+        }
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-add-cart {
+            flex-grow: 1;
+            text-align: center;
+        }
+        .loader {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            width: 100%;
+        }
+        @media (max-width: 768px) {
+            .products-layout {
+                flex-direction: column;
+            }
+            .filters-sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="../index.html" style="display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-leaf text-primary"></i>
+                    <h1>agrocart</h1>
+                </a>
+            </div>
+            <div class="nav-actions">
+                <!-- Dynamically populated by auth.js -->
+            </div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Our Products</h2>
+            <p>Quality Agricultural Inputs For Better Yield</p>
+        </div>
+    </div>
+
+    <div class="container products-layout">
+        <aside class="filters-sidebar">
+            <div class="filters-group">
+                <h4>Categories</h4>
+                <label class="filter-option"><input type="radio" name="category" value="" checked> All</label>
+                <label class="filter-option"><input type="radio" name="category" value="Seeds"> Seeds</label>
+                <label class="filter-option"><input type="radio" name="category" value="Fertilizers"> Fertilizers</label>
+                <label class="filter-option"><input type="radio" name="category" value="Pesticides"> Pesticides</label>
+                <label class="filter-option"><input type="radio" name="category" value="Other"> Other</label>
+            </div>
+            <button class="btn btn-outline btn-block" id="clear-filters">Clear Filters</button>
+        </aside>
+
+        <main class="products-main">
+            <div class="products-controls">
+                <div class="search-bar">
+                    <input type="text" id="search-input" placeholder="Search products...">
+                    <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+                </div>
+                <div class="sort-dropdown">
+                    <select id="sort-select" class="form-control" style="width:auto;">
+                        <option value="-createdAt">Newest Arrival</option>
+                        <option value="sellingPrice">Price: Low to High</option>
+                        <option value="-sellingPrice">Price: High to Low</option>
+                        <option value="name">Name: A to Z</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="products-container" class="products-grid">
+                <div class="loader"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/products.js"></script>
+</body>
+</html>

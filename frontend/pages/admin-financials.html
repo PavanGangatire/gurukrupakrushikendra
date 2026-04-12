@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Standard Admin head -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Financials</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; margin: 0; padding: 0; }
+        .admin-layout { display: flex; min-height: 100vh; }
+        .sidebar { width: 280px; background: var(--primary-dark); color: #fff; display: flex; flex-direction: column; }
+        .sidebar-header { padding: 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .sidebar-header h2 { font-size: 1.2rem; margin: 0; }
+        .sidebar-nav { flex-grow: 1; padding: 20px 0; }
+        .nav-item { display: flex; align-items: center; padding: 15px 25px; color: rgba(255,255,255,0.7); gap: 15px; font-weight: 500; }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.05); color: #fff; border-left: 4px solid var(--secondary-color); }
+        
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; }
+        .topbar { height: 70px; background: #fff; display: flex; justify-content: space-between; align-items: center; padding: 0 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .content-area { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        
+        .financial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px; }
+        .fin-card { background: #fff; border-radius: 12px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); text-align: center; }
+        .fin-card i { font-size: 3rem; margin-bottom: 15px; opacity: 0.8; }
+        .fin-card h3 { color: #888; font-weight: 500; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+        .fin-card h2 { font-size: 2.5rem; color: #333; margin: 0; }
+        
+        .net-profit { background: linear-gradient(135deg, var(--primary-color), var(--primary-dark)); color: #fff; grid-column: 1 / -1; display:flex; justify-content:space-between; align-items:center; text-align:left;}
+        .net-profit h3 { color: rgba(255,255,255,0.8); }
+        .net-profit h2 { color: #fff; font-size: 3.5rem; }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-leaf"></i>
+                <h2>agrocart Admin</h2>
+            </div>
+                        <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="admin-farmers.html" class="nav-item"><i class="fa-solid fa-users"></i> Farmers</a>
+                <a href="admin-products.html" class="nav-item"><i class="fa-solid fa-seedling"></i> Products</a>
+                <a href="admin-orders.html" class="nav-item"><i class="fa-solid fa-receipt"></i> Orders</a>
+                <a href="admin-credit.html" class="nav-item"><i class="fa-solid fa-handshake-angle"></i> Credit & Borrow</a>
+                
+                <div style="margin:20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);"></div>
+                <div style="padding: 0 25px; font-size:0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Advanced Modules</div>
+                <a href="admin-issues.html" class="nav-item"><i class="fa-solid fa-camera"></i> Crop Issues</a>
+                <a href="admin-purchases.html" class="nav-item"><i class="fa-solid fa-truck-ramp-box"></i> Stock Purchases</a>
+                <a href="admin-expenses.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Expenses</a>
+                <a href="admin-financials.html" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Financial Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item" style="color:#ff8a80;"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <h2 style="color:#333; font-size:1.4rem; margin:0;">Financial Analytics Overview</h2>
+                <a href="../index.html" class="btn btn-outline" style="padding: 8px 15px; font-size:0.9rem;">View Shop</a>
+            </header>
+
+            <div class="content-area" id="fin-content">
+                <div style="text-align:center; padding: 50px;"><i class="fa-solid fa-circle-notch fa-spin fa-3x"></i><p>Calculating Financials...</p></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-financials.js"></script>
+</body>
+</html>

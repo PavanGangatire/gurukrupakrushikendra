@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Support & Guidance - agrocart</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .page-header { background-color: var(--primary-dark); color: #fff; padding: 40px 0; text-align: center; }
+        .dashboard-layout { display: flex; gap: 30px; margin: 40px 0; }
+        .sidebar-menu { width: 250px; background: #fff; border-radius: 10px; box-shadow: var(--shadow); padding: 20px; flex-shrink: 0; align-self: flex-start; }
+        .menu-item { display: block; padding: 12px 15px; color: var(--text-color); margin-bottom: 5px; border-radius: 5px; transition: var(--transition); }
+        .menu-item:hover, .menu-item.active { background: rgba(46,125,50,0.1); color: var(--primary-color); font-weight: 500; }
+        .content-area { flex-grow: 1; }
+        .card { background: #fff; border-radius: 10px; box-shadow: var(--shadow); padding: 30px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 10px; font-weight: 500; }
+        .form-control { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 5px; font-family: inherit; }
+        .issue-card { border: 1px solid var(--border-color); border-radius: 8px; padding: 20px; margin-bottom: 20px; display: flex; gap: 20px; }
+        .issue-img { width: 150px; height: 150px; object-fit: cover; border-radius: 8px; background: #eee; }
+        .issue-content { flex-grow: 1; }
+        .status-badge { padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: 500; display: inline-block; margin-bottom: 10px; }
+        .status-Pending { background: #fff3e0; color: #f57c00; }
+        .status-Responded { background: #e3f2fd; color: #1976d2; }
+        .status-Resolved { background: #e8f5e9; color: #388e3c; }
+        .admin-reply { margin-top: 15px; padding: 15px; background: #f5f5f5; border-left: 4px solid var(--primary-color); border-radius: 4px; }
+        @media (max-width: 768px) { .dashboard-layout { flex-direction: column; } .issue-card { flex-direction: column; } .issue-img { width: 100%; height: 200px; } }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="../index.html" style="display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-leaf text-primary"></i>
+                    <h1>agrocart</h1>
+                </a>
+            </div>
+            <div class="nav-actions"></div>
+        </div>
+    </header>
+
+    <div class="page-header">
+        <div class="container">
+            <h2>Farmer Dashboard</h2>
+        </div>
+    </div>
+
+    <div class="container dashboard-layout">
+        <aside class="sidebar-menu">
+            <h3 style="margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee;">Menu</h3>
+            <a href="farmer-dashboard.html" class="menu-item"><i class="fa-solid fa-chart-line" style="width:25px;"></i> Overview</a>
+            <a href="crop-issues.html" class="menu-item active"><i class="fa-solid fa-camera" style="width:25px;"></i> Crop Guidance</a>
+            <a href="#" onclick="logout()" class="menu-item" style="color:var(--danger-color);"><i class="fa-solid fa-sign-out-alt" style="width:25px;"></i> Logout</a>
+        </aside>
+
+        <main class="content-area">
+            <div class="card">
+                <h3 style="margin-bottom:20px; color:var(--primary-dark);">Submit a Crop Issue</h3>
+                <p style="margin-bottom:20px; color:var(--text-light);">Upload a photo of your affected crop and describe the symptoms. Our agricultural experts will respond with recommendations.</p>
+                <form id="issue-form">
+                    <div id="issue-error" style="color:var(--danger-color); margin-bottom:15px; display:none;"></div>
+                    <div id="issue-success" style="color:var(--success-color); margin-bottom:15px; display:none;">Issue submitted successfully!</div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Issue Title / Crop Name</label>
+                        <input type="text" id="issue-title" class="form-control" placeholder="e.g. Yellow leaves on Soyabean" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Detailed Description</label>
+                        <textarea id="issue-desc" class="form-control" rows="4" placeholder="Describe when the issue started, weather conditions, etc." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Upload Crop Photo (Optional but recommended)</label>
+                        <input type="file" id="issue-image" class="form-control" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg" id="submit-issue-btn">Submit Issue</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom:20px; color:var(--primary-dark);">My Previous Issues</h3>
+                <div id="issues-list">
+                    <div style="text-align:center;"><i class="fa-solid fa-circle-notch fa-spin"></i> Loading...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/crop-issues.js"></script>
+</body>
+</html>

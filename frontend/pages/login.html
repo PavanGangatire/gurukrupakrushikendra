@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - agrocart</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .auth-container {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f0f4f1;
+            padding: 40px 20px;
+        }
+        .auth-card {
+            background: #fff;
+            padding: 0;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .auth-header {
+            padding: 40px 40px 20px 40px;
+            text-align: center;
+        }
+        .auth-header i {
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .auth-tabs {
+            display: flex;
+            background: #f5f5f5;
+            padding: 6px;
+            border-radius: 12px;
+            margin: 0 40px 30px 40px;
+        }
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: var(--transition);
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .auth-tab.active {
+            background: #fff;
+            color: var(--primary-dark);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .auth-tab i { margin-right: 8px; }
+        
+        .auth-body {
+            padding: 0 40px 40px 40px;
+        }
+        .form-group { margin-bottom: 25px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: #444;
+            font-size: 0.95rem;
+        }
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #edf2ef;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: var(--transition);
+            background: #fdfdfd;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(46,125,50,0.1);
+        }
+        .btn-auth {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+        .auth-links {
+            margin-top: 25px;
+            text-align: center;
+            color: #777;
+            font-size: 0.95rem;
+        }
+        .auth-links a {
+            color: var(--primary-color);
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+        #error-msg {
+            background: #fff5f5;
+            color: #d32f2f;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            border-left: 4px solid #d32f2f;
+            display: none;
+        }
+        
+        /* Dynamic Theme */
+        .theme-admin .auth-tab.active { color: #1a237e; }
+        .theme-admin .btn-auth { background: #1a237e; color: #fff; }
+        .theme-admin .btn-auth:hover { background: #0d124d; }
+        .theme-admin .auth-header i { color: #1a237e; }
+    </style>
+</head>
+<body class="theme-farmer">
+    <header class="navbar">
+        <div class="container nav-container">
+            <div class="logo">
+                <a href="../index.html" style="display:flex; align-items:center; gap:10px;">
+                    <i class="fa-solid fa-leaf text-primary"></i>
+                    <h1>agrocart</h1>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i id="header-icon" class="fa-solid fa-wheat-awn"></i>
+                <h2 id="header-title" style="color: var(--primary-dark); font-weight: 700; margin-bottom: 8px;">Farmer Portal</h2>
+                <p id="header-subtitle" style="color: #666; font-size: 0.95rem;">Access your agricultural marketplace</p>
+            </div>
+
+            <div class="auth-tabs">
+                <div id="tab-farmer" class="auth-tab active" onclick="toggleRole('farmer')">
+                    <i class="fa-solid fa-user"></i> Farmer
+                </div>
+                <div id="tab-admin" class="auth-tab" onclick="toggleRole('admin')">
+                    <i class="fa-solid fa-user-shield"></i> Shop Owner
+                </div>
+            </div>
+
+            <div class="auth-body">
+                <div id="error-msg"></div>
+                <form id="login-form">
+                    <input type="hidden" id="login-role" value="farmer">
+                    <div class="form-group">
+                        <label id="label-mobile">Mobile Number</label>
+                        <input type="text" id="mobile" class="form-control" placeholder="Enter mobile number" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" id="login-btn" class="btn btn-primary btn-auth">Login as Farmer</button>
+                </form>
+
+                <div class="auth-links">
+                    <p id="signup-link-text">New Farmer? <a href="signup.html">Create Account</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script>
+        function toggleRole(role) {
+            const body = document.body;
+            const tabFarmer = document.getElementById('tab-farmer');
+            const tabAdmin = document.getElementById('tab-admin');
+            const headerIcon = document.getElementById('header-icon');
+            const headerTitle = document.getElementById('header-title');
+            const headerSubtitle = document.getElementById('header-subtitle');
+            const labelMobile = document.getElementById('label-mobile');
+            const loginBtn = document.getElementById('login-btn');
+            const roleInput = document.getElementById('login-role');
+            const signupText = document.getElementById('signup-link-text');
+
+            roleInput.value = role;
+
+            if (role === 'admin') {
+                body.className = 'theme-admin';
+                tabAdmin.classList.add('active');
+                tabFarmer.classList.remove('active');
+                headerIcon.className = 'fa-solid fa-user-shield';
+                headerTitle.textContent = 'Shop Owner Portal';
+                headerTitle.style.color = '#1a237e';
+                headerSubtitle.textContent = 'Manage your inventory and orders';
+                labelMobile.textContent = 'Admin Mobile';
+                loginBtn.textContent = 'Login as Shop Owner';
+                signupText.innerHTML = "Don't have a shop? <a href='signup.html?role=admin' style='color: #1a237e;'>Register Shop</a>";
+            } else {
+                body.className = 'theme-farmer';
+                tabFarmer.classList.add('active');
+                tabAdmin.classList.remove('active');
+                headerIcon.className = 'fa-solid fa-wheat-awn';
+                headerTitle.textContent = 'Farmer Portal';
+                headerTitle.style.color = 'var(--primary-dark)';
+                headerSubtitle.textContent = 'Access your agricultural marketplace';
+                labelMobile.textContent = 'Mobile Number';
+                loginBtn.textContent = 'Login as Farmer';
+                signupText.innerHTML = "New Farmer? <a href='signup.html'>Create Account</a>";
+            }
+        }
+    </script>
+    <script src="../js/auth.js"></script>
+</body>
+</html>

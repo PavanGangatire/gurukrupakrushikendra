@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - agrocart</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #f4f7f6; margin: 0; padding: 0; }
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--primary-dark);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+        }
+        .sidebar-header {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .sidebar-header h2 { font-size: 1.2rem; margin: 0; }
+        .sidebar-header i { font-size: 1.8rem; color: var(--secondary-color); }
+        .sidebar-nav {
+            flex-grow: 1;
+            padding: 20px 0;
+        }
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255,255,255,0.7);
+            gap: 15px;
+            transition: var(--transition);
+            border-left: 4px solid transparent;
+            font-weight: 500;
+        }
+        .nav-item:hover, .nav-item.active {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border-left-color: var(--secondary-color);
+        }
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        .topbar {
+            height: 70px;
+            background: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .content-area {
+            padding: 30px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        /* Stat Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+        .icon-blue { background: #e3f2fd; color: #1976d2; }
+        .icon-green { background: #e8f5e9; color: #388e3c; }
+        .icon-orange { background: #fff3e0; color: #f57c00; }
+        .icon-red { background: #ffebee; color: #d32f2f; }
+        
+        .stat-details h3 { font-size: 1.8rem; color: #333; margin-bottom: 5px; margin-top:0; }
+        .stat-details p { color: #888; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; margin:0;}
+
+        /* Tables */
+        .dashboard-row {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            padding: 25px;
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .card-header h3 { color: var(--primary-dark); font-size: 1.2rem; margin:0;}
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #eee; }
+        table th { color: #888; font-weight: 500; background: #fafafa; }
+        table tbody tr:hover { background: #f9f9f9; }
+        .badge { padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; font-weight: 500; }
+        .badge-danger { background: #ffebee; color: #d32f2f; }
+        .badge-success { background: #e8f5e9; color: #388e3c; }
+        .badge-warning { background: #fff3e0; color: #f57c00; }
+
+        @media (max-width: 992px) {
+            .dashboard-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fa-solid fa-leaf"></i>
+                <h2>agrocart Admin</h2>
+            </div>
+                        <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item active"><i class="fa-solid fa-gauge"></i> Dashboard</a>
+                <a href="admin-farmers.html" class="nav-item"><i class="fa-solid fa-users"></i> Farmers</a>
+                <a href="admin-products.html" class="nav-item"><i class="fa-solid fa-seedling"></i> Products</a>
+                <a href="admin-orders.html" class="nav-item"><i class="fa-solid fa-receipt"></i> Orders</a>
+                <a href="admin-credit.html" class="nav-item"><i class="fa-solid fa-handshake-angle"></i> Credit & Borrow</a>
+                
+                <div style="margin:20px 0; border-bottom: 1px solid rgba(255,255,255,0.1);"></div>
+                <div style="padding: 0 25px; font-size:0.8rem; color:rgba(255,255,255,0.4); text-transform:uppercase;">Advanced Modules</div>
+                <a href="admin-issues.html" class="nav-item"><i class="fa-solid fa-camera"></i> Crop Issues</a>
+                <a href="admin-purchases.html" class="nav-item"><i class="fa-solid fa-truck-ramp-box"></i> Stock Purchases</a>
+                <a href="admin-expenses.html" class="nav-item"><i class="fa-solid fa-wallet"></i> Expenses</a>
+                <a href="admin-financials.html" class="nav-item"><i class="fa-solid fa-chart-pie"></i> Financial Analytics</a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" onclick="logout()" class="nav-item" style="padding:0; border:none; color:#ff8a80;"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <h2 style="color:#333; font-size:1.4rem; margin:0;">Overview</h2>
+                </div>
+                <!-- Nav to Frontend Shop -->
+                <div style="display:flex; gap: 20px; align-items:center;">
+                    <a href="../index.html" class="btn btn-outline" style="padding: 8px 15px; font-size:0.9rem;"><i class="fa-solid fa-store"></i> View Shop</a>
+                    <div class="user-menu" id="admin-profile-trigger" style="cursor:pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.7'" onmouseout="this.style.opacity='1'">
+                        <span id="admin-name" style="font-weight:500;">Admin</span>
+                        <div style="width:40px; height:40px; background:var(--primary-color); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon icon-blue"><i class="fa-solid fa-users"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-farmers">0</h3>
+                            <p>Total Farmers</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-green"><i class="fa-solid fa-indian-rupee-sign"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-sales">₹0</h3>
+                            <p>Today's Sales</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-red"><i class="fa-solid fa-handshake-angle"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-borrow">₹0</h3>
+                            <p>Pending Borrow</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon icon-orange"><i class="fa-solid fa-seedling"></i></div>
+                        <div class="stat-details">
+                            <h3 id="stat-products">0</h3>
+                            <p>Total Products</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Row -->
+                <div class="dashboard-row">
+                    <!-- Farmers pending credit -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-triangle-exclamation text-danger" style="margin-right:10px;"></i> Pending Farmer Payments (Credit)</h3>
+                            <a href="admin-credit.html" class="btn btn-outline" style="padding: 5px 15px; font-size:0.9rem; text-decoration:none;">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="borrow-table">
+                                <thead>
+                                    <tr>
+                                        <th>Farmer Name</th>
+                                        <th>Mobile</th>
+                                        <th>Village</th>
+                                        <th>Remaining Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="5" style="text-align:center;">Loading data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fa-solid fa-clock text-primary" style="margin-right:10px;"></i> Recent Orders</h3>
+                            <a href="admin-orders.html" class="btn btn-outline" style="padding: 5px 15px; font-size:0.9rem; text-decoration:none;">View All</a>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="orders-table">
+                                <thead>
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Amount</th>
+                                        <th>Method</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td colspan="4" style="text-align:center;">Loading data...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Profile Modal -->
+    <div id="admin-profile-modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-gear text-primary"></i> Shop Owner Profile</h3>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button id="edit-admin-profile-btn" class="btn btn-outline" style="padding:5px 12px; font-size:0.8rem;"><i class="fa-solid fa-pen-to-square"></i> Edit</button>
+                    <span class="close-modal" id="close-admin-profile">&times;</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- View Mode -->
+                <div id="admin-view-mode">
+                    <div style="text-align: center; margin-bottom: 25px;">
+                        <div style="width:80px; height:80px; background:#e3f2fd; color:#1976d2; font-size:2rem; display:flex; align-items:center; justify-content:center; border-radius:50%; margin:0 auto 15px auto; border: 3px solid #fff; box-shadow: var(--shadow);">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </div>
+                        <h2 id="modal-admin-name" style="color:var(--primary-dark); margin:0;">...</h2>
+                        <p id="modal-admin-shop" style="color:#d32f2f; font-weight:600; margin-top:5px;"></p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f9f9f9; padding: 20px; border-radius: 10px;">
+                        <div>
+                            <label style="display:block; font-size:0.8rem; color:#888; margin-bottom:4px;">Mobile Number</label>
+                            <p id="modal-admin-mobile" style="font-weight:600;"></p>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.8rem; color:#888; margin-bottom:4px;">Town/Village</label>
+                            <p id="modal-admin-town" style="font-weight:600;"></p>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.8rem; color:#888; margin-bottom:4px;">Taluka</label>
+                            <p id="modal-admin-taluka" style="font-weight:600;"></p>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.8rem; color:#888; margin-bottom:4px;">District</label>
+                            <p id="modal-admin-district" style="font-weight:600;"></p>
+                        </div>
+                        <div>
+                            <label style="display:block; font-size:0.8rem; color:#888; margin-bottom:4px;">State</label>
+                            <p id="modal-admin-state" style="font-weight:600;"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Edit Mode -->
+                <div id="admin-edit-mode" style="display:none;">
+                    <form id="edit-admin-form">
+                        <div class="form-group">
+                            <label>Admin Name</label>
+                            <input type="text" id="edit-admin-name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Shop Name</label>
+                            <input type="text" id="edit-shop-name" required>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                            <div class="form-group">
+                                <label>Town/Village</label>
+                                <input type="text" id="edit-admin-town" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Taluka</label>
+                                <input type="text" id="edit-admin-taluka" required>
+                            </div>
+                            <div class="form-group">
+                                <label>District</label>
+                                <input type="text" id="edit-admin-district" required>
+                            </div>
+                            <div class="form-group">
+                                <label>State</label>
+                                <input type="text" id="edit-admin-state" required>
+                            </div>
+                        </div>
+                        <div id="edit-admin-error" style="color:var(--danger-color); font-size:0.85rem; margin-top:10px; display:none;"></div>
+                        
+                        <div style="display:flex; gap:10px; justify-content: flex-end; margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee;">
+                            <button id="cancel-admin-edit" class="btn btn-outline" type="button">Cancel</button>
+                            <button id="save-admin-profile" class="btn btn-primary" type="button">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div id="admin-view-footer" class="modal-footer" style="padding: 15px 25px; border-top: 1px solid #eee; text-align: right; background: #fafafa; border-radius: 0 0 12px 12px;">
+                <button class="btn btn-primary close-admin-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Settle Modal (For Phase 6 logic expansion) -->
+    <div id="payment-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+        <div style="background:#fff; padding:30px; border-radius:10px; width:400px; text-align:center; box-shadow: 0 5px 30px rgba(0,0,0,0.2);">
+            <i class="fa-solid fa-money-bill-transfer text-primary" style="font-size:3rem; margin-bottom:15px;"></i>
+            <h3>Process Payment</h3>
+            <p style="margin:20px 0; color:#555;">This will open the detailed credit log for the farmer to record partial or full payment.</p>
+            <div style="display:flex; justify-content:center; gap: 15px;">
+                <button id="confirm-pay-btn" class="btn btn-primary">Process</button>
+                <button onclick="document.getElementById('payment-modal').style.display='none'" class="btn btn-outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin.js"></script>
+</body>
+</html>
