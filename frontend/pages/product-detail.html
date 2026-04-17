@@ -55,7 +55,7 @@
     <header class="navbar">
         <div class="container nav-container">
             <div class="logo">
-                <a href="../index.html" style="display:flex; align-items:center; gap:10px;">
+                <a href="/index.html" style="display:flex; align-items:center; gap:10px;">
                     <i class="fa-solid fa-leaf text-primary"></i>
                     <h1>Gurukrupa Krushi Kendra</h1>
                 </a>
@@ -88,7 +88,7 @@
                         <i class="fa-solid fa-search fa-4x" style="color:#ddd; margin-bottom:20px;"></i>
                         <h2 style="color:#333;">Product selection lost</h2>
                         <p style="color:#666; max-width:500px; margin:15px auto;">Your browser session may have timed out or the product list needs to be updated.</p>
-                        <a href="products.html" class="btn btn-primary">Refresh Shop Catalog</a>
+                        <a href="/pages/products.html" class="btn btn-primary">Refresh Shop Catalog</a>
                     </div>
                 `;
                 return;
@@ -105,8 +105,8 @@
                 
                 contentDiv.innerHTML = `
                     <div class="breadcrumb">
-                        <a href="products.html">Shop</a> &nbsp; > &nbsp; 
-                        <a href="products.html?category=${product.category}">${product.category}</a> &nbsp; > &nbsp; 
+                        <a href="/pages/products.html">Shop</a> &nbsp; > &nbsp; 
+                        <a href="/pages/products.html?category=${product.category}">${product.category}</a> &nbsp; > &nbsp; 
                         <span>${product.name.split(' - ')[0]}</span>
                     </div>
 
@@ -147,7 +147,7 @@
                                 <button class="btn btn-primary" id="add-to-cart-btn" style="width:100%; border-radius:20px; padding:12px; font-weight:700; margin-bottom:10px;" ${product.stock === 0 ? 'disabled' : ''}>
                                     Add to Cart
                                 </button>
-                                <a href="products.html" class="btn btn-outline" style="width:100%; border-radius:20px; padding:10px; text-decoration:none; text-align:center; display:block;">Back to List</a>
+                                <a href="/pages/products.html" class="btn btn-outline" style="width:100%; border-radius:20px; padding:10px; text-decoration:none; text-align:center; display:block;">Back to List</a>
                             </div>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                             <strong>Solution:</strong> Go back to the shop, refresh the page, and click the product again.
                         </div>
                         <br>
-                        <a href="products.html" class="btn btn-primary" style="padding: 12px 30px;">Go Back & Refresh Shop</a>
+                        <a href="/pages/products.html" class="btn btn-primary" style="padding: 12px 30px;">Go Back & Refresh Shop</a>
                     </div>
                 `;
             }

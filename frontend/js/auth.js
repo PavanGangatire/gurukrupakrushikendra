@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Redirect based on role
         if (data.user.role === 'admin') {
-            window.location.href = 'admin-dashboard.html';
+            window.location.href = '/pages/admin-dashboard.html';
         } else if (data.user.role === 'staff') {
-            window.location.href = 'staff-dashboard.html';
+            window.location.href = '/pages/staff-dashboard.html';
         } else {
             // New logic: If farmer has no shop selected, stay on dashboard for shop selection
-            window.location.href = 'farmer-dashboard.html';
+            window.location.href = '/pages/farmer-dashboard.html';
         }
     };
 
@@ -147,10 +147,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (navActions) {
             if (token && user) {
                 const isPages = window.location.pathname.includes('/pages/');
-                const cartLink = isPages ? 'cart' : 'pages/cart';
+                const cartLink = '/pages/cart.html';
                 const dashboardLink = user.role === 'admin' ? 
-                    (isPages ? 'admin-dashboard' : 'pages/admin-dashboard') : 
-                    (isPages ? 'farmer-dashboard' : 'pages/farmer-dashboard');
+                    '/pages/admin-dashboard.html' : 
+                    '/pages/farmer-dashboard.html';
 
                 let cartHtml = '';
                 if (user.role === 'farmer') {
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Export logout globally
     window.logout = () => {
         storage.clearAuth();
-        window.location.href = window.location.pathname.includes('/pages/') ? '../index.html' : 'index.html';
+        window.location.href = '/index.html';
     };
 
     checkAuthStatus();
