@@ -23,23 +23,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Check for active shop
-    const selectedShopId = localStorage.getItem('selectedShopId');
-    const selectedShopName = localStorage.getItem('selectedShopName');
-
-    if (!selectedShopId && !window.location.pathname.includes('admin')) {
-        // If not admin and no shop selected, redirect to dashboard for selection
-        window.location.href = 'farmer-dashboard.html';
-        return;
-    }
-
     const loadProducts = async () => {
         if(!productsContainer) return;
-        
+
         // Update header if exists
         const header = document.querySelector('.page-header h2');
-        if (header && selectedShopName) {
-            header.innerHTML = `<i class="fa-solid fa-store"></i> ${selectedShopName}`;
+        if (header) {
+            header.innerHTML = `<i class="fa-solid fa-store"></i> Gurukrupa Krushi Kendra`;
             const sub = document.createElement('p');
             sub.style.fontSize = '1rem';
             sub.style.opacity = '0.8';
@@ -58,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let query = params.length > 0 ? '?' + params.join('&') : '';
 
-            const data = await productAPI.getAll(query, selectedShopId);
+            const data = await productAPI.getAll(query);
             
             if (data.data.length === 0) {
                 productsContainer.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 40px; background:#fff; border-radius:10px;"><h3>No products found perfectly matching your criteria.</h3></div>';
@@ -83,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="product-actions" style="display:flex; gap:10px; align-items:center;">
                         <input type="number" id="qty-${product._id}" value="1" min="1" style="width: 50px; padding: 8px 5px; text-align: center; border: 1px solid #ddd; border-radius: 5px; flex-shrink: 0;" title="Quantity">
                         <button class="btn btn-primary btn-add-cart" style="flex:1;" onclick="addToCart('${product._id}', '${product.name.replace(/'/g, "\\'")}', ${product.price}, '${product.image}', parseInt(document.getElementById('qty-${product._id}').value) || 1)">Add to Cart</button>
-                        <a href="product-detail?id=${product._id}" class="btn btn-outline" style="text-align:center; text-decoration:none; padding: 8px 12px;" title="View Information"><i class="fa-solid fa-circle-info"></i></a>
+                        <a href="product-detail.html?id=${product._id}" onclick="localStorage.setItem('selectedProductId', '${product._id}')" class="btn btn-outline" style="text-align:center; text-decoration:none; padding: 8px 12px;" title="View Information"><i class="fa-solid fa-circle-info"></i></a>
                     </div>
                 </div>
             </div>

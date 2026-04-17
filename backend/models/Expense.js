@@ -13,11 +13,6 @@ const expenseSchema = new mongoose.Schema({
     recordedBy: {
         type: mongoose.Schema.ObjectId,
         ref: 'User'
-    },
-    shopOwner: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
     }
 }, { timestamps: true });
 

@@ -30,12 +30,7 @@ const cropIssueSchema = new mongoose.Schema({
             type: mongoose.Schema.ObjectId,
             ref: 'Product'
         }
-    ],
-    shopOwner: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
-    }
+    ]
 }, {
     timestamps: true
 });

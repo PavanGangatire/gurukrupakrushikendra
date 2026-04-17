@@ -5,7 +5,7 @@ const CropIssue = require('../models/CropIssue');
 // @access  Private/Admin
 exports.getIssues = async (req, res) => {
     try {
-        const query = { shopOwner: req.user.id };
+        const query = {};
         const issues = await CropIssue.find(query).populate('farmer', 'name mobile village').populate('suggestedProducts', 'name sellingPrice').sort('-createdAt');
         res.status(200).json({ success: true, count: issues.length, data: issues });
     } catch (err) {
@@ -31,10 +31,7 @@ exports.getMyIssues = async (req, res) => {
 exports.createIssue = async (req, res) => {
     try {
         req.body.farmer = req.user._id;
-        // shopOwner must be passed from the frontend active shop context
-        if (!req.body.shopOwner) {
-            return res.status(400).json({ success: false, message: 'Please select a shop to submit a query to.' });
-        }
+
         const issue = await CropIssue.create(req.body);
         res.status(201).json({ success: true, data: issue });
     } catch (err) {

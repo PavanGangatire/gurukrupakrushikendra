@@ -185,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const payload = {
                 userId: farmerId,
-                shopOwner: user._id || user.id, // Ensure shop owner ID is included
                 orderItems: [{
                     product: productId,
                     name: productName,

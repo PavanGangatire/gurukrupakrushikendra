@@ -1,5 +1,14 @@
 // Base configuration for API requests
-const API_URL = 'https://agrokart-rhe5.onrender.com/api';
+const isLocal = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.hostname.startsWith('192.168.') || 
+                window.location.hostname.startsWith('10.') || 
+                window.location.hostname.startsWith('172.') ||
+                window.location.protocol === 'file:';
+const API_URL = isLocal ? 'http://127.0.0.1:5000/api' : 'https://agrokart-rhe5.onrender.com/api';
+
+console.log('Environment:', isLocal ? 'Local' : 'Production');
+console.log('API Endpoint:', API_URL);
 
 // Utility functions for localStorage
 const storage = {
@@ -81,12 +90,8 @@ const authAPI = {
 
 // Product API calls
 const productAPI = {
-    getAll: async (queryParams = '', shopId = null) => {
+    getAll: async (queryParams = '') => {
         let url = `/products${queryParams}`;
-        if (shopId) {
-            const separator = queryParams ? '&' : '?';
-            url += `${separator}shopOwner=${shopId}`;
-        }
         return await apiFetch(url, {
             method: 'GET'
         });

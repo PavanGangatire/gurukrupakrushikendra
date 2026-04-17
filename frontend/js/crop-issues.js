@@ -73,19 +73,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     imageUrl = uploadRes.url;
                 }
 
-                // Create issue
-                const selectedShopId = localStorage.getItem('selectedShopId');
-                if (!selectedShopId) {
-                    alert('Please select a shop first to submit your query to their experts.');
-                    window.location.href = 'farmer-dashboard.html';
-                    return;
-                }
-
                 await issueAPI.create({
                     title: titleInp.value,
                     description: descInp.value,
-                    imageUrl,
-                    shopOwner: selectedShopId
+                    imageUrl
                 });
 
                 successDiv.style.display = 'block';

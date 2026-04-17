@@ -12,11 +12,6 @@ const stockPurchaseSchema = new mongoose.Schema({
     quantity: { type: Number, required: true },
     costPerUnit: { type: Number, required: true },
     totalCost: { type: Number, required: true },
-    shopOwner: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
-    },
     purchaseDate: { type: Date, default: Date.now },
     expiryDate: { type: Date }
 }, { timestamps: true });

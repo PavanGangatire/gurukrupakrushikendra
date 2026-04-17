@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Details - agrocart</title>
+    <title>Product Details - Gurukrupa Krushi Kendra</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
             <div class="logo">
                 <a href="../index.html" style="display:flex; align-items:center; gap:10px;">
                     <i class="fa-solid fa-leaf text-primary"></i>
-                    <h1>agrocart</h1>
+                    <h1>Gurukrupa Krushi Kendra</h1>
                 </a>
             </div>
             <div class="nav-actions"></div>
@@ -76,7 +76,10 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            const productId = urlParams.get('id');
+            let productId = urlParams.get('id');
+            if(!productId || productId === 'undefined' || productId === 'null') {
+                productId = localStorage.getItem('selectedProductId');
+            }
             const contentDiv = document.getElementById('product-detail-content');
 
             if (!productId || productId === 'undefined' || productId === 'null') {
@@ -102,8 +105,8 @@
                 
                 contentDiv.innerHTML = `
                     <div class="breadcrumb">
-                        <a href="products">Shop</a> &nbsp; > &nbsp; 
-                        <a href="products?category=${product.category}">${product.category}</a> &nbsp; > &nbsp; 
+                        <a href="products.html">Shop</a> &nbsp; > &nbsp; 
+                        <a href="products.html?category=${product.category}">${product.category}</a> &nbsp; > &nbsp; 
                         <span>${product.name.split(' - ')[0]}</span>
                     </div>
 
@@ -144,7 +147,7 @@
                                 <button class="btn btn-primary" id="add-to-cart-btn" style="width:100%; border-radius:20px; padding:12px; font-weight:700; margin-bottom:10px;" ${product.stock === 0 ? 'disabled' : ''}>
                                     Add to Cart
                                 </button>
-                                <a href="products" class="btn btn-outline" style="width:100%; border-radius:20px; padding:10px; text-decoration:none; text-align:center; display:block;">Back to List</a>
+                                <a href="products.html" class="btn btn-outline" style="width:100%; border-radius:20px; padding:10px; text-decoration:none; text-align:center; display:block;">Back to List</a>
                             </div>
                         </div>
                     </div>

@@ -11,44 +11,19 @@ const cartUtil = {
     addItem: (id, name, price, image, quantity = 1) => {
         const user = storage.getUser();
         const token = storage.getToken();
-        const selectedShopId = localStorage.getItem('selectedShopId');
-        
         // Redirect to login if unauthenticated
         if (!user || !token) {
             window.location.href = 'login.html';
             return;
         }
 
-        if (!selectedShopId) {
-            alert('Please select a shop first.');
-            window.location.href = 'farmer-dashboard.html';
-            return;
-        }
-
-        const cart = cartUtil.getCart();
-        const cartShopId = localStorage.getItem('cartShopId');
-
-        // Check if switching shops
-        if (cart.length > 0 && cartShopId && cartShopId !== selectedShopId) {
-            const confirmChange = confirm('Your cart contains items from another shop. Would you like to clear your cart and start shopping at this vendor instead?');
-            if (confirmChange) {
-                cartUtil.clearCart();
-                // continue with empty cart
-            } else {
-                return; // stop adding
-            }
-        }
-
-        // Set cart context
-        localStorage.setItem('cartShopId', selectedShopId);
-
-        const currentCart = cartUtil.getCart(); // get fresh cart if cleared
+        const currentCart = cartUtil.getCart();
         const existingItem = currentCart.find(item => item.id === id);
         
         if (existingItem) {
             existingItem.quantity += quantity;
         } else {
-            currentCart.push({ id, name, price, image, quantity, shopOwner: selectedShopId });
+            currentCart.push({ id, name, price, image, quantity });
         }
         
         cartUtil.saveCart(currentCart);

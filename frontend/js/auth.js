@@ -29,29 +29,34 @@ document.addEventListener('DOMContentLoaded', () => {
     // Unified login handler
     const loginHandler = async (e) => {
         e.preventDefault();
-        const mobile = document.getElementById('mobile').value;
-        const password = document.getElementById('password').value;
-        const role = document.getElementById('login-role').value;
+        const mobile = document.getElementById('mobile').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const roleEl = document.getElementById('login-role') || document.getElementById('role');
+        const role = roleEl ? roleEl.value : 'farmer';
         const btn = document.getElementById('login-btn');
-        const isAdminPortal = (role === 'admin');
+        const isAdminPortal = (role === 'admin' || role === 'staff');
         
         try {
             btn.disabled = true;
             const originalText = btn.textContent;
             btn.textContent = 'Verifying Account...';
             
+            console.log(`Attempting login for ${mobile} on ${role} portal...`);
             const data = await authAPI.login(mobile, password);
             
             // Validate role matches toggle
             if (isAdminPortal && data.user.role !== 'admin' && data.user.role !== 'staff') {
-                throw new Error('This account is not a Shop Owner account.');
+                console.warn('Role mismatch: User is not an admin/staff');
+                throw new Error('Invalid credentials.');
             }
             if (!isAdminPortal && data.user.role !== 'farmer') {
-                throw new Error('Admins must login via the Shop Owner tab.');
+                console.warn('Role mismatch: User is an admin/staff trying to login as farmer');
+                throw new Error('Invalid credentials.');
             }
 
             handleAuthSuccess(data);
         } catch (err) {
+            console.error('Login error:', err.message);
             showError(err.message || 'Login failed', 'error-msg');
             btn.disabled = false;
             btn.textContent = 'Retry Login';
@@ -90,21 +95,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Helper to get value or undefined
+            const val = (id) => {
+                const el = document.getElementById(id);
+                return el ? el.value.trim() : undefined;
+            };
+
             const payload = {
-                name: document.getElementById('name').value,
-                mobile: document.getElementById('mobile').value,
-                state: document.getElementById('state').value,
-                district: document.getElementById('district').value,
-                taluka: document.getElementById('taluka').value,
-                town: document.getElementById('town').value,
-                village: document.getElementById('village').value || undefined,
-                password: document.getElementById('password').value,
+                name: val('name'),
+                mobile: val('mobile'),
+                state: val('state'),
+                district: val('district'),
+                taluka: val('taluka'),
+                town: val('town'),
+                village: val('village'),
+                password: val('password'),
                 role: roleInput.value
             };
 
             if (payload.role === 'admin') {
-                payload.shopName = document.getElementById('shopName').value;
-                if(!payload.shopName) return showError('Shop Name is required for owners', 'error-msg');
+                payload.shopName = val('shopName') || val('shop-name');
+                // Don't block if shopName is missing here, the backend will catch it if required, 
+                // but let's be safe for owner portal
+                if(!payload.shopName && document.getElementById('shopName')) {
+                    return showError('Shop Name is required for owners', 'error-msg');
+                }
             }
             
             try {

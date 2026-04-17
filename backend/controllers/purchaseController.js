@@ -9,7 +9,7 @@ exports.addPurchase = async (req, res) => {
         const { supplierName, supplierContact, invoiceNumber, product, quantity, costPerUnit, purchaseDate, expiryDate } = req.body;
         
         // Ensure invoice integrity WITHIN THE SHOP
-        const existingInvoice = await StockPurchase.findOne({ invoiceNumber, shopOwner: req.user.id });
+        const existingInvoice = await StockPurchase.findOne({ invoiceNumber });
         if (existingInvoice) {
             const inputDateStr = purchaseDate ? new Date(purchaseDate).toDateString() : new Date().toDateString();
             const existingDateStr = new Date(existingInvoice.purchaseDate).toDateString();
@@ -29,7 +29,7 @@ exports.addPurchase = async (req, res) => {
             quantity, 
             costPerUnit, 
             totalCost,
-            shopOwner: req.user.id,
+
             purchaseDate: purchaseDate || Date.now(), 
             expiryDate
         });
@@ -53,7 +53,7 @@ exports.addPurchase = async (req, res) => {
 // @access  Private/Admin
 exports.getPurchases = async (req, res) => {
     try {
-        const query = { shopOwner: req.user.id };
+        const query = {};
         const purchases = await StockPurchase.find(query).populate('product', 'name category').sort('-purchaseDate');
         res.status(200).json({ success: true, count: purchases.length, data: purchases });
     } catch (err) {
@@ -99,7 +99,7 @@ exports.bulkAddPurchases = async (req, res) => {
                 quantity, 
                 costPerUnit, 
                 totalCost,
-                shopOwner: req.user.id,
+
                 purchaseDate: purchaseDate || Date.now(), 
                 expiryDate
             });

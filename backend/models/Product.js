@@ -38,11 +38,6 @@ const productSchema = new mongoose.Schema({
     image: {
         type: String,
         default: 'https://images.unsplash.com/photo-1592982537447-6f2a6a0c5fc0?auto=format&fit=crop&w=600&q=80'
-    },
-    shopOwner: {
-        type: mongoose.Schema.ObjectId,
-        ref: 'User',
-        required: true
     }
 }, {
     timestamps: true

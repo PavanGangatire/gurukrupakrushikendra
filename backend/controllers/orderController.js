@@ -38,7 +38,7 @@ exports.addOrderItems = async (req, res) => {
         // Create Order
         const order = new Order({
             user: orderUserId,
-            shopOwner: req.body.shopOwner, // Must be passed from frontend
+
             orderItems,
             paymentMethod,
             totalPrice,
@@ -107,7 +107,7 @@ exports.getMyOrders = async (req, res) => {
 // @access  Private/Admin
 exports.getOrders = async (req, res) => {
     try {
-        const query = req.user.role === 'admin' ? { shopOwner: req.user.id } : {};
+        const query = {};
         const orders = await Order.find(query).populate('user', 'id name mobile remainingBorrowAmount creditRisk').sort('-createdAt');
         res.status(200).json({ success: true, count: orders.length, data: orders });
     } catch (err) {
@@ -171,10 +171,7 @@ exports.updateOrderToPaid = async (req, res) => {
         const order = await Order.findById(req.params.id);
         if (!order) return res.status(404).json({ success: false, message: 'Order not found' });
         
-        // Ensure this admin owns the order
-        if (order.shopOwner.toString() !== req.user.id) {
-            return res.status(401).json({ success: false, message: 'Not authorized to update this order' });
-        }
+
 
         if (order.isPaid) return res.status(400).json({ success: false, message: 'Order already paid' });
 

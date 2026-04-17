@@ -132,3 +132,14 @@ Desktop.ini
 *.njsproj
 *.sln
 *.sw?
+
+# Project specific
+backend/uploads/
+backend/test-*.js
+backend/check_admin.js
+backend/create-admin.js
+backend/dedup.js
+implementation_plan.md
+task.md
+walkthrough.md
+.gemini/

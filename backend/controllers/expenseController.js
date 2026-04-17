@@ -6,7 +6,6 @@ const Expense = require('../models/Expense');
 exports.addExpense = async (req, res) => {
     try {
         req.body.recordedBy = req.user._id;
-        req.body.shopOwner = req.user.id;
         if (!req.body.date) req.body.date = Date.now();
         
         const expense = await Expense.create(req.body);
@@ -21,7 +20,7 @@ exports.addExpense = async (req, res) => {
 // @access  Private/Admin
 exports.getExpenses = async (req, res) => {
     try {
-        const expenses = await Expense.find({ shopOwner: req.user.id }).populate('recordedBy', 'name').sort('-date');
+        const expenses = await Expense.find().populate('recordedBy', 'name').sort('-date');
         res.status(200).json({ success: true, count: expenses.length, data: expenses });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });

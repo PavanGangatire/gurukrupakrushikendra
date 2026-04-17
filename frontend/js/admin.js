@@ -1,7 +1,8 @@
-document.addEventListener('DOMContentLoaded', async () => {
     // Check if user is admin
     const user = storage.getUser();
+    console.log('Current Dashboard User:', user);
     if (!user || user.role === 'farmer') {
+        console.warn('Unauthorized access redirect. User Data:', user);
         alert('Unauthorized access. Redirecting...');
         window.location.href = '../index.html';
         return;
@@ -11,8 +12,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const loadDashboard = async () => {
         try {
+            console.log('Fetching dashboard stats...');
             const response = await adminAPI.getDashboard();
             const data = response.data;
+            console.log('Dashboard Data Received:', data);
 
             // DOM Elements
             const statFarmers = document.getElementById('stat-farmers');

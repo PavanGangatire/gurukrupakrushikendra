@@ -26,50 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial display from storage
     document.getElementById('pending-borrow-amt').textContent = `₹${user.remainingBorrowAmount || 0}`;
 
-    const shopSelector = document.getElementById('shop-selector-section');
     const activeShopping = document.getElementById('active-shopping-content');
-    const townSpan = document.getElementById('farmer-town');
-
-    const selectShop = (shopId, shopName) => {
-        localStorage.setItem('selectedShopId', shopId);
-        localStorage.setItem('selectedShopName', shopName);
-        location.reload();
-    };
-
-    window.changeShop = () => {
-        localStorage.removeItem('selectedShopId');
-        localStorage.removeItem('selectedShopName');
-        location.reload();
-    };
-
-    const loadShops = async () => {
-        const grid = document.getElementById('shops-grid');
-        townSpan.textContent = user.taluka || 'your taluka';
-        try {
-            const res = await shopAPI.getNearMe({ taluka: user.taluka });
-            if (res.data.length === 0) {
-                grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; padding:40px; background:#fff; border-radius:10px; box-shadow:var(--shadow);">
-                    <i class="fa-solid fa-store-slash fa-3x" style="color:#ccc; margin-bottom:15px;"></i>
-                    <p>No shops are currently registered in <strong>${user.taluka || 'your taluka'}</strong> Taluka.</p>
-                </div>`;
-                return;
-            }
-
-            grid.innerHTML = res.data.map(shop => `
-                <div class="card" style="padding:20px; transition:0.3s; border:1px solid #eee;">
-                    <h3 style="color:var(--primary-dark); margin-bottom:5px;">${shop.shopName || 'Agri Shop'}</h3>
-                    <p style="font-size:0.9rem; color:#666; margin-bottom:15px;"><i class="fa-solid fa-location-dot"></i> ${shop.village || shop.town}, ${shop.taluka}</p>
-                    <button class="btn btn-primary btn-block" onclick="setGlobalShop('${shop._id}', '${(shop.shopName || 'Agri Shop').replace(/'/g, "\\'")}')">Enter Shop</button>
-                </div>
-            `).join('');
-        } catch (err) {
-            grid.innerHTML = '<div style="grid-column: 1 / -1; color:red;">Failed to load local shops.</div>';
-        }
-    };
-
-    window.setGlobalShop = (id, name) => {
-        selectShop(id, name);
-    };
 
     const loadMyOrders = async () => {
         const tableBody = document.querySelector('#my-orders-table tbody');
@@ -95,10 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const loadFeaturedProducts = async (shopId) => {
+    const loadFeaturedProducts = async () => {
         const grid = document.getElementById('featured-products-grid');
         try {
-            const data = await productAPI.getAll('?limit=8', shopId);
+            const data = await productAPI.getAll('?limit=8');
             if (data.data.length === 0) {
                 grid.innerHTML = '<div style="grid-column: 1 / -1; text-align:center; padding:30px; color:#888; background:#f9f9f9; border-radius:8px;">This shop hasn\'t uploaded any products yet.</div>';
                 return;
@@ -108,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <img src="${p.image}" style="width:100%; height:120px; object-fit:cover; border-radius:5px; margin-bottom:10px;">
                     <h4 style="margin:0 0 5px 0; font-size:1rem; color:#333;">${p.name}</h4>
                     <p style="margin:0 0 8px 0; font-weight:700; color:var(--primary-color);">₹${p.price}</p>
-                    <a href="product-detail.html?id=${p._id}" class="btn btn-outline" style="display:block; padding:5px; font-size:0.8rem; text-decoration:none;">Product Details</a>
+                    <a href="product-detail.html?id=${p._id}" onclick="localStorage.setItem('selectedProductId', '${p._id}')" class="btn btn-outline" style="display:block; padding:5px; font-size:0.8rem; text-decoration:none;">Product Details</a>
                 </div>
             `).join('');
         } catch (err) {
@@ -117,19 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const initDashboard = () => {
-        const selectedShopId = localStorage.getItem('selectedShopId');
-        const selectedShopName = localStorage.getItem('selectedShopName');
-
-        if (selectedShopId) {
-            activeShopping.style.display = 'block';
-            shopSelector.style.display = 'none';
-            document.getElementById('active-shop-name').textContent = selectedShopName;
-            loadFeaturedProducts(selectedShopId);
-        } else {
-            activeShopping.style.display = 'none';
-            shopSelector.style.display = 'block';
-            loadShops();
-        }
+        activeShopping.style.display = 'block';
+        loadFeaturedProducts();
         
         fetchFreshUser();
         loadMyOrders();

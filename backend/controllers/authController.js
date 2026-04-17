@@ -64,7 +64,11 @@ exports.register = async (req, res) => {
 // @access  Public
 exports.login = async (req, res) => {
     try {
-        const { mobile, password } = req.body;
+        let { mobile, password } = req.body;
+        
+        // Trim inputs to handle accidental whitespace
+        mobile = mobile ? mobile.trim() : mobile;
+        password = password ? password.trim() : password;
 
         // Validate mobile & password
         if (!mobile || !password) {
@@ -74,11 +78,17 @@ exports.login = async (req, res) => {
         // Check for user
         const user = await User.findOne({ mobile }).select('+password');
         if (!user) {
+            console.log(`Login failed: User with mobile ${mobile} not found.`);
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
 
+        console.log(`User found: ${user.name} (${user.role}). Comparing password...`);
+        console.log(`Received password length: ${password ? password.length : 0}`);
+
         // Check if password matches
         const isMatch = await user.matchPassword(password);
+        console.log(`Password match result for ${mobile}: ${isMatch}`);
+
         if (!isMatch) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
         }
