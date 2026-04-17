@@ -5,7 +5,7 @@ const isLocal = window.location.hostname === 'localhost' ||
                 window.location.hostname.startsWith('10.') || 
                 window.location.hostname.startsWith('172.') ||
                 window.location.protocol === 'file:';
-const API_URL = isLocal ? 'http://127.0.0.1:5000/api' : 'https://agrokart-rhe5.onrender.com/api';
+const API_URL = isLocal ? 'http://127.0.0.1:5000/api' : 'https://gurukrupakrushikendra.onrender.com/api';
 
 console.log('Environment:', isLocal ? 'Local' : 'Production');
 console.log('API Endpoint:', API_URL);
