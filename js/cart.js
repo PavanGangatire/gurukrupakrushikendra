@@ -13,7 +13,7 @@ const cartUtil = {
         const token = storage.getToken();
         // Redirect to login if unauthenticated
         if (!user || !token) {
-            window.location.href = 'login.html';
+            window.location.href = '/pages/login.html';
             return;
         }
 

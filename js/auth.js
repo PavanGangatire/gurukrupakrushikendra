@@ -172,16 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             } else {
                 navActions.innerHTML = `
-                    <a href="pages/login.html" class="btn btn-outline">Login</a>
+                    <a href="/pages/login.html" class="btn btn-outline">Login</a>
                     <a href="#categories" class="btn btn-primary">Browse Products</a>
                 `;
-                // Try adjusting path if already in pages directory
-                if(window.location.pathname.includes('/pages/')) {
-                    navActions.innerHTML = `
-                        <a href="login.html" class="btn btn-outline">Login</a>
-                        <a href="products.html" class="btn btn-primary">Browse Products</a>
-                    `;
-                }
+                // Simplified: Absolute paths work everywhere now
+                navActions.innerHTML = `
+                    <a href="/pages/login.html" class="btn btn-outline">Login</a>
+                    <a href="/index.html#categories" class="btn btn-primary">Browse Products</a>
+                `;
             }
         }
     };
