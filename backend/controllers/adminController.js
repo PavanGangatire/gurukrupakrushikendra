@@ -57,7 +57,7 @@ exports.getDashboardStats = async (req, res) => {
                     mobile: f.mobile,
                     village: f.village,
                     remainingBorrowAmount: pendingBorrowOrders
-                        .filter(o => o.user.toString() === f._id.toString())
+                        .filter(o => o.user && o.user.toString() === f._id.toString())
                         .reduce((sum, o) => sum + o.totalPrice, 0)
                 })),
                 recentOrders: recentOrders.map(o => ({

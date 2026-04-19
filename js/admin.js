@@ -1,3 +1,4 @@
+document.addEventListener('DOMContentLoaded', () => {
     // Check if user is admin
     const user = storage.getUser();
     console.log('Current Dashboard User:', user);
@@ -64,8 +65,19 @@
             }
 
         } catch (err) {
-            console.error('Error loading admin dashboard', err);
-            document.querySelector('.content-area').innerHTML = `<div style="text-align:center; padding:50px; color:var(--danger-color);"><h3>Failed to load dashboard data.</h3><p>${err.message}</p></div>`;
+            console.error('CRITICAL: Error loading admin dashboard', err);
+            const contentArea = document.querySelector('.content-area');
+            if (contentArea) {
+                contentArea.innerHTML = `
+                    <div style="text-align:center; padding:50px; background:#fff; border-radius:12px; margin:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size:4rem; color:var(--danger-color); margin-bottom:20px;"></i>
+                        <h3 style="color:#333;">Dashboard Connection Error</h3>
+                        <p style="color:#666; margin:15px 0;">We couldn't retrieve the latest statistics. This usually happens if the backend server is restarting or if there is a data integrity issue.</p>
+                        <code style="display:block; background:#f4f4f4; padding:15px; border-radius:8px; color:var(--danger-color); font-family:monospace; margin:20px 0;">Error: ${err.message}</code>
+                        <button onclick="location.reload()" class="btn btn-primary">Try Refreshing Page</button>
+                    </div>
+                `;
+            }
         }
     };
 
