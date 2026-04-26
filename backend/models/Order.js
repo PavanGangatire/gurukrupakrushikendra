@@ -60,4 +60,11 @@ const orderSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// Indexes for performance
+orderSchema.index({ user: 1 });
+orderSchema.index({ paymentMethod: 1 });
+orderSchema.index({ isPaid: 1 });
+orderSchema.index({ createdAt: -1 });
+orderSchema.index({ user: 1, paymentMethod: 1, isPaid: 1 });
+
 module.exports = mongoose.model('Order', orderSchema);

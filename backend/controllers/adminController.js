@@ -9,67 +9,75 @@ const Expense = require('../models/Expense');
 // @access  Private/Admin
 exports.getDashboardStats = async (req, res) => {
     try {
-        const totalProducts = await Product.countDocuments();
-        
-        // Count farmers who have interacted with this shop
-        const customerIds = await Order.distinct('user');
-        const totalFarmers = customerIds.length;
-        
-        // Calculate Total Pending Borrow FOR THIS SHOP
-        // Note: For now, we are looking at orders with paymentMethod: 'Borrow' that are not yet marked as Completed/Paid
-        const pendingBorrowOrders = await Order.find({ 
-            paymentMethod: 'Borrow',
-            isPaid: false
-        });
-        const totalPendingBorrow = pendingBorrowOrders.reduce((acc, order) => acc + order.totalPrice, 0);
-
-        // Recent Orders
-        const recentOrders = await Order.find()
-            .populate('user', 'name mobile')
-            .sort('-createdAt')
-            .limit(10);
-
-        // Find farmers with pending borrow FOR THIS SHOP
-        const borrowUserIds = await Order.distinct('user', { 
-            paymentMethod: 'Borrow', 
-            isPaid: false 
-        });
-        const farmersWithBorrow = await User.find({ _id: { $in: borrowUserIds } }).select('name mobile village');
-
-        // Today's Sales
         const today = new Date();
         today.setHours(0, 0, 0, 0);
-        const todaysOrders = await Order.find({ 
-            createdAt: { $gte: today } 
-        });
-        const todaySales = todaysOrders.reduce((acc, order) => acc + order.totalPrice, 0);
+
+        // Perform dashboard calculations in parallel or combined aggregation
+        const [stats, recentOrders, farmersWithBorrow] = await Promise.all([
+            // 1. Core Stats Facet
+            Order.aggregate([
+                {
+                    $facet: {
+                        totalFarmers: [
+                            { $group: { _id: "$user" } },
+                            { $count: "count" }
+                        ],
+                        totalPendingBorrow: [
+                            { $match: { paymentMethod: 'Borrow', isPaid: false } },
+                            { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+                        ],
+                        todaySales: [
+                            { $match: { createdAt: { $gte: today } } },
+                            { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+                        ]
+                    }
+                }
+            ]),
+            // 2. Recent Orders
+            Order.find()
+                .populate('user', 'name mobile')
+                .sort('-createdAt')
+                .limit(10),
+            // 3. Farmers with Borrow (top ones or specific logic)
+            Order.aggregate([
+                { $match: { paymentMethod: 'Borrow', isPaid: false } },
+                { $group: { _id: "$user", remainingBorrowAmount: { $sum: "$totalPrice" } } },
+                { $lookup: { from: 'users', localField: '_id', foreignField: '_id', as: 'userDetails' } },
+                { $unwind: '$userDetails' },
+                {
+                    $project: {
+                        id: '$_id',
+                        name: '$userDetails.name',
+                        mobile: '$userDetails.mobile',
+                        village: '$userDetails.village',
+                        remainingBorrowAmount: 1
+                    }
+                }
+            ])
+        ]);
+
+        const totalProducts = await Product.countDocuments();
+        
+        const dashboardData = {
+            totalFarmers: stats[0].totalFarmers[0]?.count || 0,
+            totalProducts,
+            totalPendingBorrow: stats[0].totalPendingBorrow[0]?.total || 0,
+            todaySales: stats[0].todaySales[0]?.total || 0,
+            farmersWithBorrow,
+            recentOrders: recentOrders.map(o => ({
+                id: o._id,
+                user: o.user ? o.user.name : 'Unknown',
+                mobile: o.user ? o.user.mobile : 'N/A',
+                totalPrice: o.totalPrice,
+                paymentMethod: o.paymentMethod,
+                status: o.status,
+                date: o.createdAt
+            }))
+        };
 
         res.status(200).json({
             success: true,
-            data: {
-                totalFarmers,
-                totalProducts,
-                totalPendingBorrow,
-                todaySales,
-                farmersWithBorrow: farmersWithBorrow.map(f => ({
-                    id: f._id,
-                    name: f.name,
-                    mobile: f.mobile,
-                    village: f.village,
-                    remainingBorrowAmount: pendingBorrowOrders
-                        .filter(o => o.user && o.user.toString() === f._id.toString())
-                        .reduce((sum, o) => sum + o.totalPrice, 0)
-                })),
-                recentOrders: recentOrders.map(o => ({
-                    id: o._id,
-                    user: o.user ? o.user.name : 'Unknown',
-                    mobile: o.user ? o.user.mobile : 'N/A',
-                    totalPrice: o.totalPrice,
-                    paymentMethod: o.paymentMethod,
-                    status: o.status,
-                    date: o.createdAt
-                }))
-            }
+            data: dashboardData
         });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
@@ -81,8 +89,19 @@ exports.getDashboardStats = async (req, res) => {
 // @access  Private/Admin
 exports.getFinancials = async (req, res) => {
     try {
-        const orders = await Order.find();
-        const totalSales = orders.reduce((acc, order) => acc + order.totalPrice, 0);
+        const stats = await Order.aggregate([
+            {
+                $facet: {
+                    totalSales: [
+                        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+                    ],
+                    totalPendingCredit: [
+                        { $match: { paymentMethod: 'Borrow', isPaid: false } },
+                        { $group: { _id: null, total: { $sum: "$totalPrice" } } }
+                    ]
+                }
+            }
+        ]);
 
         const purchases = await StockPurchase.find();
         const totalPurchases = purchases.reduce((acc, p) => acc + p.totalCost, 0);
@@ -90,19 +109,19 @@ exports.getFinancials = async (req, res) => {
         const expenses = await Expense.find();
         const totalExpenses = expenses.reduce((acc, e) => acc + e.amount, 0);
 
-        const totalPendingCredit = orders
-            .filter(o => o.paymentMethod === 'Borrow' && !o.isPaid)
-            .reduce((acc, o) => acc + o.totalPrice, 0);
+        const totals = {
+            totalSales: stats[0].totalSales[0]?.total || 0,
+            totalPendingCredit: stats[0].totalPendingCredit[0]?.total || 0,
+            totalPurchases,
+            totalExpenses
+        };
 
-        const netProfit = totalSales - totalPurchases - totalExpenses;
+        const netProfit = totals.totalSales - totals.totalPurchases - totals.totalExpenses;
 
         res.status(200).json({
             success: true,
             data: {
-                totalSales,
-                totalPurchases,
-                totalExpenses,
-                totalPendingCredit,
+                ...totals,
                 netProfit
             }
         });
@@ -116,21 +135,41 @@ exports.getFinancials = async (req, res) => {
 // @access  Private/Admin
 exports.getAllFarmers = async (req, res) => {
     try {
-        // Find ALL users with role 'farmer'
-        const users = await User.find({ role: 'farmer' }).select('-password').sort('-createdAt');
+        // Use aggregation to fetch farmers and their borrow amount in one go
+        const farmers = await User.aggregate([
+            { $match: { role: 'farmer' } },
+            { $sort: { createdAt: -1 } },
+            {
+                $lookup: {
+                    from: 'orders',
+                    let: { userId: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$user', '$$userId'] },
+                                        { $eq: ['$paymentMethod', 'Borrow'] },
+                                        { $eq: ['$isPaid', false] }
+                                    ]
+                                }
+                            }
+                        },
+                        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
+                    ],
+                    as: 'borrowData'
+                }
+            },
+            {
+                $addFields: {
+                    id: '$_id',
+                    remainingBorrowAmount: { $ifNull: [{ $arrayElemAt: ['$borrowData.total', 0] }, 0] }
+                }
+            },
+            { $project: { password: 0, borrowData: 0 } }
+        ]);
         
-        // Calculate shop-specific borrow for each farmer
-        const farmersWithBorrow = await Promise.all(users.map(async (u) => {
-            const orders = await Order.find({ user: u._id, paymentMethod: 'Borrow', isPaid: false });
-            const shopSpecificBorrow = orders.reduce((sum, o) => sum + o.totalPrice, 0);
-            return {
-                ...u._doc,
-                id: u._id,
-                remainingBorrowAmount: shopSpecificBorrow // Map it to the expected frontend field
-            };
-        }));
-        
-        res.status(200).json({ success: true, count: farmersWithBorrow.length, data: farmersWithBorrow });
+        res.status(200).json({ success: true, count: farmers.length, data: farmers });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }

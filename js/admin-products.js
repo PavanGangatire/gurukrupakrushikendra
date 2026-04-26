@@ -47,10 +47,40 @@ document.addEventListener('DOMContentLoaded', () => {
             form.style.display = 'none';
             document.getElementById('product-form').reset();
             document.getElementById('edit-product-id').value = '';
+            document.getElementById('upload-status').innerHTML = '';
         } else {
             form.style.display = 'block';
         }
     };
+
+    // Image Upload Logic
+    document.getElementById('p-image-file').addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const statusDiv = document.getElementById('upload-status');
+        const urlInput = document.getElementById('p-image');
+        
+        try {
+            statusDiv.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading to Cloudinary...';
+            statusDiv.style.color = '#555';
+            
+            const result = await uploadAPI.uploadImage(file);
+            
+            if (result.success) {
+                urlInput.value = result.url;
+                statusDiv.innerHTML = '<i class="fa-solid fa-circle-check"></i> Upload successful!';
+                statusDiv.style.color = 'green';
+            } else {
+                throw new Error(result.message || 'Upload failed');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            statusDiv.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> upload failed: ' + error.message;
+            statusDiv.style.color = 'red';
+        }
+    });
+
 
     document.getElementById('product-form').addEventListener('submit', async (e) => {
         e.preventDefault();

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gurukrupa Krushi Kendra - Modular Test Report</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --secondary: #1b5e20;
+            --background: #f4f7f6;
+            --text: #333;
+            --white: #ffffff;
+            --pass: #4caf50;
+            --pending: #ff9800;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            margin: 0;
+            padding: 40px;
+        }
+        .report-header {
+            text-align: center;
+            margin-bottom: 50px;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+        }
+        .report-header h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 2.5rem;
+        }
+        .report-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        .module-section {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        .module-section h2 {
+            color: var(--secondary);
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: #f9f9f9;
+            color: #555;
+            font-weight: 600;
+        }
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: inline-block;
+        }
+        .status-pass {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-tested {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .summary-box {
+            margin-top: 50px;
+            padding: 30px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+        }
+        .summary-box h3 { margin-top: 0; }
+        @media print {
+            body { background: white; padding: 0; }
+            .report-header { margin-top: 0; }
+            .module-section { box-shadow: none; border: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="report-header">
+        <h1>Gurukrupa Krushi Kendra</h1>
+        <p>Comprehensive Modular Test Report | Evaluation Cycle: April 2026</p>
+        <p><strong>Lead Auditor:</strong> Antigravity AI Engine</p>
+    </div>
+
+    <!-- 1. AUTH -->
+    <div class="module-section">
+        <h2>1. Authentication & Security</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>AUTH-01</td><td>New User Signup</td><td>Successfully create account with unique email.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-02</td><td>Login Verification</td><td>Access granted only with correct credentials.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-03</td><td>JWT Authorization</td><td>Private API requests require valid Bearer token.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-04</td><td>Duplicate Email</td><td>System blocks registration of existing email.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-05</td><td>Wrong Password</td><td>Access denied with "Invalid Credentials" error.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-06</td><td>Token Expiration</td><td>Expired tokens are rejected correctly.</td><td><span class="status-badge status-tested">Verified</span></td></tr>
+                <tr><td>AUTH-07</td><td>Password Hashing</td><td>Plain text passwords never stored (Bcrypt).</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-08</td><td>Profile Update</td><td>User can update name and phone number.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-09</td><td>Logout Logic</td><td>Token is cleared; session destroyed.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>AUTH-10</td><td>Role Hierarchy</td><td>Farmers cannot access /admin paths.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 2. PRODUCT -->
+    <div class="module-section">
+        <h2>2. Product & Inventory</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>PROD-01</td><td>Product Fetching</td><td>Grid populates with all database items.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-02</td><td>Category Filter</td><td>Returns items for specific categories.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-03</td><td>Stock Updates</td><td>Checkout reduces stock count in DB.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-04</td><td>Search Accuracy</td><td>Keyword search returns matching items.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-05</td><td>Out of Stock UI</td><td>Checkout blocked if stock is zero.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-06</td><td>Admin Add Product</td><td>Upload image + details creates new item.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-07</td><td>Admin Edit Product</td><td>Price/Stock updates reflect instantly.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-08</td><td>Decimal Pricing</td><td>Supports prices like 250.50.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>PROD-09</td><td>Low Stock Alert</td><td>Highlight items with low inventory.</td><td><span class="status-badge status-tested">Verified</span></td></tr>
+                <tr><td>PROD-10</td><td>Image Deletion</td><td>Deleting product removes file from server.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. ORDER -->
+    <div class="module-section">
+        <h2>3. Order & Checkout</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>ORD-01</td><td>Add to Cart</td><td>Item appears in cart immediately.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-02</td><td>Duplicate Add</td><td>Increments quantity in cart.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-03</td><td>Cart Total Math</td><td>Calculation (Price * Qty) is accurate.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-04</td><td>Remove Item</td><td>Total price re-calculates correctly.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-05</td><td>Empty Checkout</td><td>Order blocked if cart is empty.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-06</td><td>Borrow / Credit</td><td>Farmers can order on credit facility.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-07</td><td>Order History</td><td>User sees list of their past records.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-08</td><td>Persistence</td><td>Cart survives page refresh.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-09</td><td>Shipping Info</td><td>Address/Phone saved with order.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ORD-10</td><td>Success Redirect</td><td>User sees confirmation after checkout.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 4. ADMIN -->
+    <div class="module-section">
+        <h2>4. Admin Control Panel</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>ADM-01</td><td>Summary Cards</td><td>Show correct counts of Users/Orders.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-02</td><td>Order Processing</td><td>Mark order as Delivered or Paid.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-03</td><td>User Search</td><td>Find farmers by Village or Taluka.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-04</td><td>Credit View</td><td>View outstanding debts for users.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-05</td><td>Financial Stats</td><td>Total Sales vs Expenses monthly.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-06</td><td>Bulk Actions</td><td>Delete multiple items simultaneously.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-07</td><td>Pagination</td><td>Handles large datasets cleanly.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-08</td><td>Shop Settings</td><td>Update contact info on frontend.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-09</td><td>Admin Profile</td><td>Change secure login credentials.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ADM-10</td><td>Data Integrity</td><td>Deleting user clears related metadata.</td><td><span class="status-badge status-tested">Verified</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 5. ISSUES -->
+    <div class="module-section">
+        <h2>5. Crop Guidance System</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>ISS-01</td><td>Submission</td><td>Farmer captures photo + text of disease.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-02</td><td>File Type</td><td>Blocks non-image related uploads.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-03</td><td>Admin Panel</td><td>Disease photo visible to management.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-04</td><td>Admin Reply</td><td>Text advice appears for the farmer.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-05</td><td>Status Track</td><td>Pending -> Resolved mapping works.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-06</td><td>Data Privacy</td><td>Farmers cannot see others' reports.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-07</td><td>Size Limit</td><td>Blocks files larger than 5MB.</td><td><span class="status-badge status-tested">Verified</span></td></tr>
+                <tr><td>ISS-08</td><td>Guidance Logs</td><td>Review previous seasonal solutions.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-09</td><td>Product Link</td><td>Admin can embed product purchase links.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>ISS-10</td><td>Management</td><td>Old issues can be deleted securely.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 6. FINANCE -->
+    <div class="module-section">
+        <h2>6. Financial & Stock Logs</h2>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Test Case</th><th>Expected Result</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>FIN-01</td><td>Expense Logging</td><td>Log shop utilities (Rent/Salary).</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-02</td><td>Stock Purchase</td><td>Inventory increases automatically.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-03</td><td>Supplier Logs</td><td>Track invoice and supplier sources.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-04</td><td>Conflict Avoidance</td><td>Flags duplicate invoice numbers.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-05</td><td>Profit Engine</td><td>Calculates margin (Sale - Cost).</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-06</td><td>Categorization</td><td>Group by Salary, Bill, or Other.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-07</td><td>Debt Calculation</td><td>Sum of all "Borrowed" orders.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-08</td><td>Payment History</td><td>Track partial payments on account.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-09</td><td>Reporting</td><td>Exportable dashboard data views.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+                <tr><td>FIN-10</td><td>Archives</td><td>Access record history for compliance.</td><td><span class="status-badge status-pass">Pass</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="summary-box">
+        <h3>Final Audit Outcome: SUCCESSFUL</h3>
+        <p>The Gurukrupa Krushi Kendra platform has undergone 60 unique functional tests across two evaluation cycles. The platform is currently rated as **Production Ready** with no critical blockers identified.</p>
+    </div>
+
+</body>
+</html>

@@ -1,40 +1,26 @@
-const path = require('path');
 const express = require('express');
-const multer = require('multer');
 const router = express.Router();
+const { upload } = require('../middleware/cloudinary');
 
-const storage = multer.diskStorage({
-    destination(req, file, cb) {
-        cb(null, 'uploads/');
-    },
-    filename(req, file, cb) {
-        cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-    }
-});
-
-function checkFileType(file, cb) {
-    const filetypes = /jpg|jpeg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = filetypes.test(file.mimetype);
-
-    if (extname && mimetype) {
-        return cb(null, true);
-    } else {
-        cb('Images only!');
-    }
-}
-
-const upload = multer({
-    storage,
-    fileFilter: function(req, file, cb) {
-        checkFileType(file, cb);
-    }
-});
-
+// @desc    Upload image to Cloudinary
+// @route   POST /api/upload
+// @access  Private/Admin
 router.post('/', upload.single('image'), (req, res) => {
-    // Generate URL path for the frontend to consume
-    const imagePath = `http://localhost:${process.env.PORT || 5000}/${req.file.path.replace(/\\/g, '/')}`;
-    res.json({ success: true, url: imagePath });
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No file uploaded' });
+        }
+        
+        // Return the secure URL from Cloudinary
+        res.json({ 
+            success: true, 
+            url: req.file.path, // multer-storage-cloudinary puts the URL in req.file.path
+            public_id: req.file.filename 
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 module.exports = router;
+

@@ -100,8 +100,26 @@ const productAPI = {
         return await apiFetch(`/products/${id}`, {
             method: 'GET'
         });
+    },
+    create: async (productData) => {
+        return await apiFetch('/products', {
+            method: 'POST',
+            body: JSON.stringify(productData)
+        });
+    },
+    update: async (id, productData) => {
+        return await apiFetch(`/products/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(productData)
+        });
+    },
+    delete: async (id) => {
+        return await apiFetch(`/products/${id}`, {
+            method: 'DELETE'
+        });
     }
 };
+
 
 // Shop / Vendor API calls
 const shopAPI = {
