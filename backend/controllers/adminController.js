@@ -130,46 +130,25 @@ exports.getFinancials = async (req, res) => {
     }
 };
 
-// @desc    Get all registered farmers
+// @desc    Get all registered users with credit info
 // @route   GET /api/admin/farmers
 // @access  Private/Admin
 exports.getAllFarmers = async (req, res) => {
     try {
-        // Use aggregation to fetch farmers and their borrow amount in one go
-        const farmers = await User.aggregate([
-            { $match: { role: 'farmer' } },
-            { $sort: { createdAt: -1 } },
-            {
-                $lookup: {
-                    from: 'orders',
-                    let: { userId: '$_id' },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$user', '$$userId'] },
-                                        { $eq: ['$paymentMethod', 'Borrow'] },
-                                        { $eq: ['$isPaid', false] }
-                                    ]
-                                }
-                            }
-                        },
-                        { $group: { _id: null, total: { $sum: '$totalPrice' } } }
-                    ],
-                    as: 'borrowData'
-                }
-            },
-            {
-                $addFields: {
-                    id: '$_id',
-                    remainingBorrowAmount: { $ifNull: [{ $arrayElemAt: ['$borrowData.total', 0] }, 0] }
-                }
-            },
-            { $project: { password: 0, borrowData: 0 } }
-        ]);
+        // Fetch all users (farmers, staff, or admins who might have borrow orders)
+        // This ensures if an admin makes a borrow order, it can be settled
+        const users = await User.find({})
+            .select('-password')
+            .sort({ createdAt: -1 });
         
-        res.status(200).json({ success: true, count: farmers.length, data: farmers });
+        // Map to include 'id' and ensure remainingBorrowAmount is present
+        const formattedUsers = users.map(u => ({
+            ...u._doc,
+            id: u._id,
+            remainingBorrowAmount: u.remainingBorrowAmount || 0
+        }));
+        
+        res.status(200).json({ success: true, count: formattedUsers.length, data: formattedUsers });
     } catch (err) {
         res.status(500).json({ success: false, error: err.message });
     }
