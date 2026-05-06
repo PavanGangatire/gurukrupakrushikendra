@@ -10,13 +10,15 @@ async function checkOrders() {
         await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/krushi-kendra');
         console.log('Connected.');
         
-        const orders = await Order.find().sort({ createdAt: -1 }).limit(10);
-        console.log(`Found ${orders.length} recent orders.`);
+        const orders = await Order.find({ paymentMethod: 'Borrow' }).sort({ createdAt: -1 }).limit(10);
+        console.log(`Found ${orders.length} recent borrow orders.`);
         
         for (const o of orders) {
             console.log(`\nID: ${o._id}`);
+            console.log(`User ID: ${o.user}`);
             console.log(`Total: ${o.totalPrice}`);
-            console.log(`Items: ${JSON.stringify(o.orderItems)}`);
+            console.log(`Payment Method: ${o.paymentMethod}`);
+            console.log(`Is Paid: ${o.isPaid}`);
         }
         
         process.exit(0);

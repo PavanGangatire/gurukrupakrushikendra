@@ -4,10 +4,10 @@ require('dotenv').config();
 
 async function check() {
     await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/krushi-kendra');
-    const users = await User.find({}).select('name mobile role taluka town village shopName');
+    const users = await User.find({}).select('name mobile role remainingBorrowAmount');
     console.log(`TOTAL_USERS:${users.length}`);
     users.forEach(u => {
-        console.log(`USER|Mob:${u.mobile}|Role:${u.role}|Tal:${u.taluka}|Town:${u.town}|Shop:${u.shopName || 'N/A'}`);
+        console.log(`USER|ID:${u._id}|Mob:${u.mobile}|Bal:${u.remainingBorrowAmount || 0}|Role:${u.role}`);
     });
     process.exit(0);
 }

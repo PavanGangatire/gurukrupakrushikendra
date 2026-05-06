@@ -130,11 +130,16 @@
                         </div>
                     </div>
 
-                    <!-- EXPLICIT BUTTON WRAPPER -->
-                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
-                        <button type="submit" id="submit-credit-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-size: 1.1rem;">Confirm Credit</button>
-                        <div id="credit-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
+                    <!-- ACTION BUTTONS -->
+                    <div style="padding-top: 15px; border-top: 1px solid #eee; display: flex; gap: 10px;">
+                        <button type="button" id="submit-credit-btn" class="btn btn-primary" style="flex: 1; padding: 12px; font-size: 1rem;">
+                            <i class="fa-solid fa-handshake-angle"></i> Give on Credit
+                        </button>
+                        <button type="button" id="submit-cash-btn" class="btn btn-outline" style="flex: 1; padding: 12px; font-size: 1rem; border-color: var(--primary-color); color: var(--primary-color);">
+                            <i class="fa-solid fa-money-bill-1-wave"></i> Direct Cash Sale
+                        </button>
                     </div>
+                    <div id="credit-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
                 </form>
             </div>
         </div>
@@ -164,51 +169,7 @@
         </div>
     </div>
 
-    <!-- Give on Credit Modal -->
-    <div id="give-credit-modal" class="modal">
-        <div class="modal-content" style="max-width: 500px; display: flex; flex-direction: column;">
-            <div class="modal-header">
-                <h3><i class="fa-solid fa-handshake-angle text-primary"></i> Give Products on Credit</h3>
-                <span class="close-modal" id="close-credit-modal">&times;</span>
-            </div>
-            <div class="modal-body" style="overflow-y: auto; max-height: 80vh;">
-                <form id="give-credit-form">
-                    <div style="display: flex; gap: 10px; align-items: flex-end; margin-bottom: 15px;">
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                            <label style="display:block; margin-bottom:5px; font-weight:600;">Select Farmer</label>
-                            <select id="credit-farmer" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                                <option value="">Loading farmers...</option>
-                            </select>
-                        </div>
-                        <button type="button" id="show-add-farmer-btn" class="btn btn-outline" style="padding: 10px 15px;" title="Register New Farmer"><i class="fa-solid fa-user-plus"></i></button>
-                    </div>
-                    
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label style="display:block; margin-bottom:5px; font-weight:600;">Select Product</label>
-                        <select id="credit-product" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                            <option value="">Loading products...</option>
-                        </select>
-                    </div>
 
-                    <div style="display: flex; gap: 15px; margin-bottom: 25px;">
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                            <label style="display:block; margin-bottom:5px; font-weight:600;">Quantity</label>
-                            <input type="number" id="credit-qty" min="1" value="1" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
-                        </div>
-                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                            <label style="display:block; margin-bottom:5px; font-weight:600;">Total Value (₹)</label>
-                            <input type="number" id="credit-total" readonly style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; background: #eee;">
-                        </div>
-                    </div>
-
-                    <div style="padding-top: 15px; border-top: 1px solid #eee;">
-                        <button type="submit" id="submit-credit-btn" class="btn btn-primary" style="width: 100%; display: block; padding: 12px; font-size: 1.1rem;">Confirm Credit</button>
-                        <div id="credit-msg" style="margin-top: 15px; text-align: center; font-weight: 500;"></div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
     <!-- Add New Farmer Modal -->
     <div id="add-farmer-modal" class="modal">

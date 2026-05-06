@@ -161,27 +161,35 @@ document.addEventListener('DOMContentLoaded', () => {
     productSelect.addEventListener('change', updateTotal);
     qtyInput.addEventListener('input', updateTotal);
 
-    // Form Submit
+    // Form Submit Logic
     const form = document.getElementById('give-credit-form');
-    const submitBtn = document.getElementById('submit-credit-btn');
+    const creditBtn = document.getElementById('submit-credit-btn');
+    const cashBtn = document.getElementById('submit-cash-btn');
     const msgEl = document.getElementById('credit-msg');
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    const handleSale = async (paymentMethod) => {
         const farmerId = document.getElementById('credit-farmer').value;
         const productId = productSelect.value;
         const qty = parseInt(qtyInput.value);
         const totalPrice = parseInt(totalInput.value);
         
         const option = productSelect.options[productSelect.selectedIndex];
+        
+        if (!farmerId || !productId || qty < 1) {
+            msgEl.style.color = 'var(--danger-color)';
+            msgEl.textContent = 'Please fill in all details.';
+            return;
+        }
+
         const productName = option.getAttribute('data-name');
         const productPrice = parseFloat(option.getAttribute('data-price'));
-
-        if (!farmerId || !productId || qty < 1) return;
+        const activeBtn = paymentMethod === 'Borrow' ? creditBtn : cashBtn;
 
         try {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            creditBtn.disabled = true;
+            cashBtn.disabled = true;
+            const originalBtnHtml = activeBtn.innerHTML;
+            activeBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
             
             const payload = {
                 userId: farmerId,
@@ -191,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     qty: qty,
                     price: productPrice
                 }],
-                paymentMethod: 'Borrow',
+                paymentMethod: paymentMethod, // 'Borrow' or 'Cash'
                 totalPrice: totalPrice
             };
 
@@ -201,24 +209,31 @@ document.addEventListener('DOMContentLoaded', () => {
             const res = await orderAPI.create(payload);
             if (res.success) {
                 msgEl.style.color = 'var(--success-color)';
-                msgEl.textContent = 'Credit assigned successfully!';
+                msgEl.textContent = paymentMethod === 'Borrow' ? 'Credit assigned successfully!' : 'Cash sale recorded successfully!';
                 
                 setTimeout(() => {
                     creditModal.style.display = 'none';
                     form.reset();
                     msgEl.textContent = '';
-                    submitBtn.disabled = false;
-                    submitBtn.innerHTML = 'Confirm Credit';
+                    creditBtn.disabled = false;
+                    cashBtn.disabled = false;
+                    creditBtn.innerHTML = '<i class="fa-solid fa-handshake-angle"></i> Give on Credit';
+                    cashBtn.innerHTML = '<i class="fa-solid fa-money-bill-1-wave"></i> Direct Cash Sale';
                     loadCredits();
                 }, 1500);
             }
         } catch (err) {
             msgEl.style.color = 'var(--danger-color)';
-            msgEl.textContent = err.message || 'Failed to assign credit.';
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Confirm Credit';
+            msgEl.textContent = err.message || 'Failed to record sale.';
+            creditBtn.disabled = false;
+            cashBtn.disabled = false;
+            creditBtn.innerHTML = '<i class="fa-solid fa-handshake-angle"></i> Give on Credit';
+            cashBtn.innerHTML = '<i class="fa-solid fa-money-bill-1-wave"></i> Direct Cash Sale';
         }
-    });
+    };
+
+    creditBtn.addEventListener('click', () => handleSale('Borrow'));
+    cashBtn.addEventListener('click', () => handleSale('Cash'));
 
     // Add Farmer Modal logic
     const addFarmerModal = document.getElementById('add-farmer-modal');
